@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>易为码-日报</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="../public/img/favicon.ico" type="image/x-icon">
+    <script id="daily_aboutme" type="text/template">
+      <div class="tt_daily_completion">
+        <div class="title_dc"></div>
+        <div class="cont_cd">
+          <div class="left_dc">
+            <div class="action_dc"></div>
+            <div data-name="today－submit-situation">
+              <dl class="todaystatus_dc">
+                <dt>个人提交情况</dt>
+                <%if(daily){%>
+                  <dd>
+                    <p>
+                      <span class="<%=sclass%> icon_dc"></span>
+                      <span class="status_dc"><%=status%></span>
+                      <span><%=daily.createDate%></span>
+                    </p>
+                  </dd>
+                <%}else{%>
+                <dd>
+                  <p>
+                    <span class="icon-dialog-closed-warn icon_dc"></span>
+                    <span class="status_dc">未提交</span>
+                    <span></span>
+                  </p>
+                  <!--<div class="evaluation_dc">评价：暂无</div>-->
+                </dd>
+                <%}%>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-name="group-member"></div>
+      <div data-name="pub-daily" class="tt_daily_pub">
+        <div class="tt_daily_pub_view">
+          <%if(daily){%>
+          <div class="action_dp">
+            <div class="left_dp">已写日报</div>
+            <div class="right_dp">
+              <button class="edit-pub-daily-btn btn" data-id="<%=daily.dId%>" data-name="edit-pub-daily">修改</button>
+            </div>
+          </div>
+          <%}else if(isToday){%>
+          <div class="action_dp">
+            <div class="left_dp">工作日报</div>
+          </div>
+          <div data-name="pub-daily-form">
+            <div id="Daily2015/12/14" class="tt_publishmblog">
+              <div class="box_pm" data-name="mblog-box">
+                <div class="content_pm input-default" data-name="new-content-wrap">
+                  <div class="input_pm">
+                    <textarea data-name="new-content" style="resize:none;" data-smemberid="smember_4853" placeholder="请输入日报内容"></textarea>
+                  </div>
+                  <div class="count_pm">
+                    <span class="num_pm" data-name="count">0</span>
+                    /4000
+                  </div>
+                </div>
+                <div class="action_pm">
+                  <button class="btn btn-sure btn-disabled" data-name="submit">发布</button>
+                  <span class="quna_pm" id="1" isvisible="0" data-name="range">
+                    <label><input name="share" type="checkbox" value="1" style="margin:0;" />分享到动态</label>
+                  </span>
+                </div>
+                <div id="attachmentViewBox_homeMblog" class="error_container"></div>
+                <div id="attachmentViewBox_homeMblog" class="preview_container">
+                  <ul class="tita-upload-preview"></ul>
+                </div>
+                <div id="attachmentViewBox_homeMblog" class="loading_view"></div>
+              </div>
+            </div>
+          </div>
+          <%}%>
+        </div>
+      </div>
+      <div data-name="feed-list" class="tt_daily_feedlist">
+        <%if(daily){%>
+        <div class="feed_list_v2">
+          <div data-name="feed-list-box">
+            <div class="feed_item_box_v2">
+              <div class="left_fb" data-name="feed-left">
+                <div>
+                  <a href="#italent/home?name=TalentProfile-record&amp;to_user_id=200878172" hidefocus="true" traget="_blank">
+                    <span class="radius_img50 avatar_fl" style="background-color:#7eb6e0;" original-title="<%=daily.nickName%>"><%=daily.nickName%></span>
+                  </a>
+                </div>
+              </div>
+              <div class="right_fb">
+                <div data-name="feed-main">
+                  <div class="main_fb">
+                    <div class="edit_fb" data-name="feed-top-action"></div>
+                    <div class="info_fb" data-name="feed-source">
+                      <div>
+                        <a href="javascript:void(0);" hidefocus="true" class="name_ifb" traget="_blank"><%=daily.nickName%></a>
+                        <span class="cont_ifb">的日报</span>
+                      </div>
+                    </div>
+                    <div class="clearfix clear_fb"></div>
+                  </div>
+                </div>
+                <div data-name="feed-content">
+                  <div class="simpletask_fb">
+                    <dt>
+                      <span class="type_stfb">日报</span>
+                      &nbsp;
+                      <a href="javascript:void(0);" class="name_stfb" target="_blank"><%=date.substring(0,4)%>年<%=date.substring(5,7)%>月<%=date.substring(8,10)%>日日报</a>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span class="<%=sclass%> icos_dfb"></span>
+                      <span class="status_stfb"><%=status%></span>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                    </dt>
+                    <dd data-name="feed-daily-content">
+                      <div class="dynamic_fed"><%=daily.dContent%></div>
+                      <div class="update_input_pm" style="display:none;">
+                        <textarea data-name="new-content" style="resize:none;width:100%;height:90px;" data-smemberid="smember_4853" placeholder="请输入日报内容"><%=daily.dContent%></textarea>
+                        <div class="project_detail_top_left" style="margin: 2px 0 0 2px;">
+                          <div class="project_btn_group" style="display: block;width:144px;">
+                            <a class="btn_blue update_daily_sure" data-id="<%=daily.dId%>" href="javascript:;">确定</a>
+                            <a class="btn_white update_daily_white" href="javascript:;">取消</a>
+                          </div>
+                        </div>
+                      </div>
+                    </dd>
+                  </div>
+                </div>
+                <div data-name="feed-actoin">
+                  <div class="action_wrap_fb clearfix">
+                    <div class="refer_fb">
+                      <span class="time_fb"><%=daily.createDate%></span>
+                      &nbsp;&nbsp;
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="submain_fb" data-name="feed-sub-main">
+                <div data-name="feed-comment"></div>
+              </div>
+              <div data-name="feed-pubblog"></div>
+            </div>
+          </div>
+        </div>
+        <%}else if(isToday){%>
+        <div class="tt_common_emptyinit">
+          <div class="content_emptyinit">
+            <div class="className">请在上面发布您的日报内容</div>
+          </div>
+        </div>
+        <%}%>
+      </div>
+      <div data-name="share"></div>
+    </script>
+    <script id="daily_aboutteam" type="text/template">
+      <div class="tt_daily_completion">
+        <div class="title_dc"></div>
+        <div class="cont_cd">
+          <div class="left_dc">
+            <div class="action_dc"></div>
+            <div class="todaystatus_dc">
+              <p>团队提交情况：</p>
+              <p>总人数：<%=userlist.length%>人</p>
+              <p>已提交：<%=daily.length%>人</p>
+              <p>未提交：<%=userlist.length - daily.length%>人</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-name="group-member">
+        <div class="tt_daily_groupmemberstatus">
+          <div class="title_gms">当天递交情况</div>
+          <table class="list_gms">
+            <tbody>
+              <%
+              teamUser = "";
+              _.each(daily,function(item){               
+                teamUser +=item.nickName;
+              %>
+              <tr>
+                <td class="col1_gms">
+                  <span class="radius_img30 " style="background-color:#f0c75a;" original-title="<%=item.nickName%>"><%=item.nickName.substring(0,1)%></span>
+                </td>
+                <td class="col2_gms"><%=item.nickName%></td>
+                <td class="col3_gms">
+                  <span class="icon-right"></span>
+                </td>
+                <td class="col4_gms">
+                  <span>已提交</span>
+                </td>
+                <td class="col5_gms">
+                  <!--<a href="javascript:void(0);" id="200882070" data-name="send-item-message">提醒ta写日报</a>-->
+                  <span><%=item.dContent%></span>
+                </td>
+              </tr>  
+              <%});%>
+              <%
+              _.each(userlist,function(user){
+                if(teamUser.indexOf(user.nickName) == -1){
+              %>
+              <tr>
+                <td class="col1_gms">
+                  <span class="radius_img30 " style="background-color:#f0c75a;" original-title="<%=user.nickName%>"><%=user.nickName.substring(0,1)%></span>
+                </td>
+                <td class="col2_gms"><%=user.nickName%></td>
+                <td class="col3_gms">
+                  <span class="icon-dialog-closed-warn"></span>
+                </td>
+                <td class="col4_gms">
+                  <span>未提交</span>
+                </td>
+                <td class="col5_gms">
+                  <!--<a href="javascript:void(0);" id="200882070" data-name="send-item-message">提醒ta写日报</a>-->
+                </td>
+              </tr>
+              <%}});%>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div data-name="pub-daily" class="tt_daily_pub"></div>     
+    </script>
+    <link rel="stylesheet" href="../public/css/index.css">
+    <link rel="stylesheet" href="../public/css/index-1512011029.min.css">
+    <link rel="stylesheet" href="../public/css/lib.css">
+    <link rel="stylesheet" href="../public/css/all.css">
+    <link rel="stylesheet" href="../public/css/tipsy.css">
+    <link rel="stylesheet" href="../public/css/bootstrap-datetimepicker.min.css">
+    <script src="../public/js/require.js" data-main="../public/js/daily.js?v=17"></script>
+  </head>
+  <body>
+    <div id="bs_layout_container">
+      <div class="tt_layout_warp">
+        <div id="header-region">
+          <div class="_tt_header">
+            <a class="logo logo_1" href="./index.html" title="返回首页"></a>
+            <span class="brand"></span>
+            <ul class="_tt_headnav" data-name="head-nav">
+              <!-- <div class="tt-header-extention">
+                <li class="guide_tthn ico_tthn" original-title="">
+                  <a href="javascript:void(0);" original-title="tita入门"></a>
+                </li>
+                <li class="inivte_tthn ico_tthn">
+                  <a href="/u/200849439/Invite/InviteMoreIndex" data-name="invite-member" original-title="邀请同事"></a>
+                </li>
+              </div>
+              <li class="task_tthn ico_tthn" data-name="head-task">
+                <a href="#more/tasks" original-title="任务中心"></a>
+              </li>
+              <li class="todo_tthn ico_tthn" data-name="head-to-do">
+                <a href="#more/messages?messageType=1" data-name="no-msg" original-title="待办">
+                  <span class="red-remind-num" data-name="head-to-do-indicator" style="display: none;">0</span>
+                </a>
+              </li>
+              <li class="msg_tthn ico_tthn" data-name="head-message">
+                <a href="#more/messages?messageType=2&amp;isRead=2" data-name="no-msg" original-title="通知">
+                  <div class="red-remind-num" data-name="head-message-indicator" style="display: none;">0</div>
+                </a>
+              </li> -->
+              <li class="logout_tthn" tabindex="0">
+                <a href="javascript:void(0);" class="avatar_ltthn">
+                  <span class="radius_img30 radius_img30" style="background-color:#f5b168;" original-title=""></span>
+                </a>
+                <a href="javascript:void(0);" class="namewrap_tthn"><span class="name_tthn"></span><b class="caret"></b></a>
+                <ul class="menu_ltthn">
+                  <!-- <li class="profile_ltthn"><a href="#italent/home?name=TalentProfile-record">个人主页</a></li>
+                  <li class="archives_ltthn"><a href="#more/archives">简档编辑</a></li>
+                  <li class="set_ltthn"><a href="javascript:void(0);">个人设置</a></li> -->
+                  <li><a class="logout-btn" data-name="logout" href="javascript:void(0);">退出登录</a></li>
+                </ul>
+              </li>
+            </ul>
+            <!-- <div class="tt_headsearch" data-name="head-search">
+              <div class="text_tths" style="width: auto; display: none;">
+                <input type="search" placeholder="搜索同事、动态、项目等">
+              </div>
+              <a href="javascript:void(0);" class="btn_tths" data-name="head-search-button" original-title="搜索全站内容"></a>
+            </div> -->
+          </div>
+        </div>
+        <div class="_tt_layout_body">
+          <div id="sidebar-region">
+            <ul class="_tt_sidenav" style="min-height: 950px;">
+              <li>
+                <a href="./index.html" class="bench_ttsn" data-type="HomeBench" id="fbaea0c9-45d4-4a69-b5fd-333e80d392a9" target=""> 
+                  <strong></strong><span>工作台</span> 
+                </a>
+              </li>
+              <li>
+                <a href="./home.html" class="home_ttsn" data-type="HomeDynamic" id="c1a9a11b-7a61-4578-943c-25499322aeea" target=""> 
+                  <strong></strong><span>动态</span>  
+                  <em class="red-remind" data-name="tita-sidebar-home-indicator"></em>
+                </a>
+              </li>
+              <li>
+                <a href="./work.html" class="work_ttsn" data-type="HomeWork" id="6a647758-3bdb-4669-8ad8-5526a535e176" target=""> 
+                  <strong></strong><span>项目</span>    
+                </a>
+              </li>
+              <li class="active">
+                <a href="./daily.html" class="daily_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target=""> 
+                  <strong></strong><span>日报</span>
+                </a>
+              </li>
+              <li>
+                <a href="./report.html" class="report_ttsn" data-type="HomePlanStatistic" id="6db951ce-677d-4e3d-907d-67956828a312" target=""> 
+                  <strong></strong><span>报表</span>
+                </a>
+              </li>
+              <li>
+                <a href="./staff.html" class="staff_ttsn" data-type="HomeStaff" id="ebdd2fc3-fba3-41bf-8d13-9121b0921cd3" target=""> 
+                  <strong></strong><span>团队</span>
+                </a>
+              </li>
+              <li>
+                <a href="./apply.html" class="apply_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target=""> 
+                  <strong></strong><span>应用</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- 主区域 -->
+          <div id="main-region" class="_tt_layout_container_fluid tt_layout_container_show_rightbar" style="min-height: 978px;">
+            <div class="tt_layout_subnav_fluid">
+              <!-- side sub nav -->          
+              <div class="tt_layout_tabnav">
+                <div data-name="side-bar-user-info" class="tt_side_subnav_userinfo">
+                  <div>
+                    <div class="_tt_selectyearplan">
+                      <a href="javascript:void(0);" class="avatar_ttsyp">
+                        <span class="radius_img50 " style="background-color:#f5b168;"></span>
+                      </a>
+                      <div class="wrap">
+                        <a class="name_ttsyp" href="javascript:void(0);"></a>
+                        <span class="department_ttsyp"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div data-name="side-bar-nav">
+                  <div>
+                    <div class="tt_side_subnav_wrap">
+                      <div class="subtab_ssw">
+                        <li class="active">
+                          <a href="javascript:void(0);" title="总结">
+                            <span>总结</span>
+                          </a>
+                        </li>
+                      </div>
+                      <div class="year_ssw" data-name="year-list">
+                        <a href="javascript:void(0)" class="dropdown-toggle" data-name="change-group">
+                          <span>2015</span> <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown_ssw" data-name="group-list">
+                          <li>
+                            <a href="javascript:void(0);" title="" groupid="1"></a>
+                          </li>
+                          <li>
+                            <a href="javascript:void(0);" title="" groupid="2"></a>
+                          </li>
+                          <li>
+                            <a href="javascript:void(0);" title="" groupid="3"></a>
+                          </li>
+                          <li>
+                            <a href="javascript:void(0);" title="" groupid="4"></a>
+                          </li>
+                        </ul>
+                      </div>
+                      <ul class="_tt_side_subnav" data-name="side-bar-nav">
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">1月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">2月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">3月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">4月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">5月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">6月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">7月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">8月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">9月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">10月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">11月</a>
+                        </li>
+                        <li>
+                          <a data-trigger="false" href="javascript:void(0);">12月</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- side sub nav end -->          
+              <div class="tt_layout_container" data-name="container" style="min-height: 978px;">
+                <div class="tt_daily_container">
+                  <!-- <div class="_tt_loading_m">努力加载中…</div>
+                -->
+                <div class="tt_daily_top">
+                  <div data-name="datepicker-statistics" class="date_dt">
+                    <div>
+                      <div class="highlightDate">
+                        <div class="date_hd" data-name="date-picker">                          
+                        </div>
+                        <!-- <div class="remark">
+                          <h2 data-name="title">个人统计：</h2>
+                          <div class="statics">
+                            <span class="comStyle borderAll"></span>
+                            <span>已交</span>
+                            <span class="comStyle borderIn"></span>
+                            <span>未交</span>
+                            <span class="comStyle borderPart"></span>
+                            <span>补交</span>
+                          </div>
+                        </div> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-name="completion" class="basic_dt">
+                    <div>
+                      <div class="tt_tab_page tt_daily_tab_page">
+                        <ul class="tab_tp" data-name="daily-tab">
+                          <li class="active" data-type="1">
+                            <a href="javascript:void(0)" data-trigger="false">我的日报</a>
+                          </li>
+                          <li class="" data-type="2">
+                            <a href="javascript:void(0)" data-trigger="false">团队日报</a>
+                          </li>
+                          <!--<li class="" data-type="3">
+                            <a href="javascript:void(0)" data-trigger="false">月报</a>
+                          </li> -->
+                        </ul>
+                      </div>
+                      <div class="tt_page_container">
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tt_daily_detail_container" data-name="detail-container"></div>
+          </div>
+          </div>
+          <!-- 主区域 -->
+        </div>
+      </div>
+    </div>
+    <!-- 添加参与人 -->
+    <div class="smember_container" offset-left="206" offset-top="338" style="display: none;">
+      <div class="smember_simple_container">
+        <div class="smember_condition">
+          <div class="smember_condition_all">
+            <div class="smember_header_input">
+              <input autocomplete="off" class="smember_condition_input" type="text" name="content" placeholder="输入同事姓名或邮箱">
+            </div>
+          </div>
+        </div>
+        <div class="smember_search_content">
+          <div class="smember_search_content_left">
+            <div class="smember_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  <div>
+                    <div class="smember_list_empty">输入同事姓名或邮箱</div>
+                  </div>
+                </ul>
+              </div>
+            </div>
+            <div class="smember_search_content_left_footer"></div>
+          </div>
+        </div>      
+        <div class="smember_footer">
+          <div class="smember_footer_group">
+            <a href="javascript:void(0)" class="smember_btn_default" data-handler="Close">关闭</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 添加参与人 -->
+  </body>
+</html>

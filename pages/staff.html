@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>易管理-同事</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="../public/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../public/css/index.css">
+    <link rel="stylesheet" href="../public/css/index-1512011029.min.css">
+    <link rel="stylesheet" href="../public/css/lib.css">
+    <link rel="stylesheet" href="../public/css/all.css">
+    <link rel="stylesheet" href="../public/css/tipsy.css">
+    <link rel="stylesheet" href="../public/css/zTreeStyle/zTreeStyle.css""> 
+    <link rel="stylesheet" href="../public/css/staff/bam_userindex-1510261007.min.css"">
+    <link rel="stylesheet" href="../public/css/bootstrap-datetimepicker.min.css">
+    <script id="userlist" type="text/template">
+      <%_.each(userlist,function(item){%>
+        <tr>
+          <td class="td_ltb amendnews_ltb">
+            <span class="user_id"><%=item.uId%></span>
+          </td>
+          <td class="td_ltb name_ltb">
+            <span class="picture_nltb"></span>
+            <span class="name_tltb"> <b href="javascript:void(0)"><%=item.nickName%></b>
+            </span>
+          </td>
+          <td class="td_ltb">
+            <span class="email_tltb"> <b href="javascript:void(0)" id="mailBox"><%=item.userName%></b>
+            </span>
+          </td>
+          <td class="td_ltb">
+            <div class="section_tltb">
+              <span class="depart_tltb"><%=item.dName%></span>
+            </div>
+          </td>
+          <td class="td_ltb">
+            <%var jobArray = {0:"普通成员",1:"项目经理",2:"部门经理"}%>
+            <span><%=jobArray[item.dRole]%></span>
+          </td>
+          <td>
+            <%if(rLevel == "0" && item.uId == uid){%>
+              <span class="user_update emto_update_btn" data-intro="<%=encodeURIComponent(JSON.stringify(item))%>" title="更新"></span>
+            <%}else if(rLevel != "0"){%>
+              <span class="user_update emto_update_btn" data-intro="<%=encodeURIComponent(JSON.stringify(item))%>" title="更新"></span>
+              <span class="user_delete emto_delete_btn" data-uid="<%=item.uId%>" data-deid="<%=item.deId%>" title="删除"></span>
+            <%}%>         
+          </td>
+        </tr>
+      <%});%>  
+    </script>
+    <script src="../public/js/require.js" data-main="../public/js/staff.js?v=9"></script>
+  </head>
+  <body>
+    <div id="bs_layout_container">
+      <div class="tt_layout_warp">
+        <div id="header-region" class="header-region">
+          <div class="_tt_header">
+            <a class="logo logo_1" href="./index.html" title="返回首页"></a>
+            <span class="brand"></span>
+            <ul class="_tt_headnav" data-name="head-nav">
+              <!--<div class="tt-header-extention">
+                <li class="guide_tthn ico_tthn" original-title="">
+                  <a href="javascript:void(0);" original-title="tita入门"></a>
+                </li>
+                <li class="inivte_tthn ico_tthn">
+                  <a href="" data-name="invite-member" original-title="邀请同事"></a>
+                </li>
+              </div>
+              <li class="task_tthn ico_tthn" data-name="head-task">
+                <a href="#more/tasks" original-title="任务中心"></a>
+              </li>
+              <li class="todo_tthn ico_tthn" data-name="head-to-do">
+                <a href="#more/messages?messageType=1" data-name="no-msg" original-title="待办">
+                  <span class="red-remind-num" data-name="head-to-do-indicator" style="display: none;">0</span>
+                </a>
+              </li>
+              <li class="msg_tthn ico_tthn" data-name="head-message">
+                <a href="#more/messages?messageType=2&amp;isRead=2" data-name="no-msg" original-title="通知">
+                  <div class="red-remind-num" data-name="head-message-indicator" style="display: none;">0</div>
+                </a>
+              </li>-->
+              <li class="logout_tthn" tabindex="0">
+                <a href="javascript:void(0);" class="avatar_ltthn">
+                  <span class="radius_img30 radius_img30" style="background-color:#f5b168;" original-title=""></span>
+                </a>
+                <a href="javascript:void(0);" class="namewrap_tthn">
+                  <span class="name_tthn"></span> <b class="caret"></b>
+                </a>
+                <ul class="menu_ltthn">
+                  <!--<li class="profile_ltthn">
+                    <a href="">个人主页</a>
+                  </li>
+                  <li class="archives_ltthn">
+                    <a href="">简档编辑</a>
+                  </li>
+                  <li class="set_ltthn">
+                    <a href="">个人设置</a>
+                  </li>-->
+                  <li>
+                    <a class="logout-btn" data-name="logout" href="javascript:void(0);">退出登录</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <!--<div class="tt_headsearch" data-name="head-search">
+              <div class="text_tths" style="width: auto; display: none;">
+                <input type="search" placeholder="搜索同事、动态、项目等"></div>
+              <a href="javascript:void(0);" class="btn_tths" data-name="head-search-button" original-title="搜索全站内容"></a>
+            </div>-->
+          </div>
+        </div>
+        <div class="_tt_layout_body">
+          <div id="sidebar-region">
+            <ul class="_tt_sidenav" style="min-height: 950px;">
+              <li>
+                <a href="./index.html" class="bench_ttsn" data-type="HomeBench" id="fbaea0c9-45d4-4a69-b5fd-333e80d392a9" target=""> <strong></strong>
+                  <span>工作台</span>
+                </a>
+              </li>
+              <li>
+                <a href="./home.html" class="home_ttsn" data-type="HomeDynamic" id="c1a9a11b-7a61-4578-943c-25499322aeea" target=""> <strong></strong>
+                  <span>动态</span> <em class="red-remind" data-name="tita-sidebar-home-indicator"></em>
+                </a>
+              </li>
+              <li>
+                <a href="./work.html" class="work_ttsn" data-type="HomeWork" id="6a647758-3bdb-4669-8ad8-5526a535e176" target="">
+                  <strong></strong>
+                  <span>项目</span>
+                </a>
+              </li>
+              <li>
+                <a href="./daily.html" class="daily_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target="">
+                  <strong></strong>
+                  <span>日报</span>
+                </a>
+              </li>
+              <li>
+                <a href="./report.html" class="report_ttsn" data-type="HomePlanStatistic" id="6db951ce-677d-4e3d-907d-67956828a312" target="">
+                  <strong></strong>
+                  <span>报表</span>
+                </a>
+              </li>
+              <li class="active">
+                <a href="./staff.html" class="staff_ttsn" data-type="HomeStaff" id="ebdd2fc3-fba3-41bf-8d13-9121b0921cd3" target="">
+                  <strong></strong>
+                  <span>团队</span>
+                </a>
+              </li>
+              <li>
+                <a href="./apply.html" class="apply_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target=""> 
+                  <strong></strong><span>应用</span>
+                </a>
+              </li>
+              
+            </ul>
+          </div>
+          <!-- 主区域 -->
+          <div id="main-region" class="_tt_layout_container_fluid" style="min-height: 471px;">
+            <div class="_tt_layout_subnav_fluid">
+              <div class="_tt_layout_tabnav tt_staff_sidebar">
+                <div class="tt_side_subnav_wrap tt_staff_subnav">
+                  <ul class="subtab_ssw">
+                    <li class="active">
+                      <a href="javascript:void(0);" title="" data-trigger="false">
+                        <span>团队架构</span>
+                      </a>
+                    </li>                 
+                  </ul>
+                  <div data-name="side-bar" class="side_bar">
+                    <div class="zTreeDemoBackground left">
+                      <div class="ztree" id="treeDemo">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="_tt_layout_container" style="min-height: 979px;">
+                <div class="contentwrap">
+                  <div class="maincontent leftbg clearfix">
+                    
+
+                    <div class="rightlistmain leftbg" id="rightListMain">
+                      <div class="operationarea">
+                        <div class="tool_oa clearfix">
+                          <div class="item_toa">
+                            <span class="team_itoa" id="departmentName" departid="0"></span>
+                          </div>
+                          <div class="handle_toa" style="display: none;">
+                            <a href="javascript:void(0)" class="a_button addemployees_htoa">
+                              <span class="span_ab add_htoa"> <b>add</b>
+                              </span>
+                              新增员工
+                            </a>
+                          </div>
+                          <div class="search_toa" id="searchStaff">
+                            <input type="text" value="" placeholder="可输入姓名、电话">          
+                            <a href="javascript:void(0)" id="searchBtn"></a>
+                          </div>
+                        </div>
+                        <p class="members_oa">
+                          共
+                          <span id="sumup">1</span>
+                          个员工
+                        </p>
+                        <p class="resultsearch_oa">
+                          搜索不到该用户！
+                        </p>
+                      </div>
+                      <div id="listMassage">
+                        <!-- <div class="operatebtn" style="display: block;">
+                          <div class="menu_ob clearfix">
+                            <div class="btn_sob">
+                              <a href="javascript:void(0)" class="a_button btn_disabled removestaff">
+                                移动到部门
+                                <span class="span_ab"></span>
+                              </a>
+                            </div>
+                            <div class="btn_sob setbut_mob">
+                              <a href="javascript:void(0)" class="a_button leavestaff btn_disabled">设为离职</a>
+                            </div>
+                            <div class="btn_sob setbut_mob">
+                              <a href="javascript:void(0)" class="a_button setadmin btn_disabled ">设为管理员</a>
+                            </div>
+                            <div class="btn_sob setbut_mob">
+                              <a href="javascript:void(0)" class="a_button setbackadmin btn_disabled ">设为系统管理员</a>
+                            </div>
+                            <div class="btn_sob setbut_mob">
+                              <a href="javascript:void(0)" class="a_button setleader setdecompany_bsob btn_disabled" data-name="boss">设为公司老板</a>
+                            </div>
+                            <div class="btn_sob setbut_mob">
+                              <a href="javascript:void(0)" class="a_button logout btn_disabled">注销员工</a>
+                            </div>
+                          </div>
+                        </div> -->
+                        <div class="tablebox" id="tableBox" style="display: block;">
+                          <table class="listable_tb">
+                            <thead>
+                              <tr class="headtr_ltb" style="background-color: rgb(250, 250, 250);">
+                                <th class="th_ltb">
+                                  <span>用户编号</span>
+                                </th>
+                                <th width="140" class="th_ltb">
+                                  <span>姓名</span>
+                                </th>
+                                <th width="150" class="th_ltb">
+                                  <span>手机</span>
+                                </th>
+                                <th width="120" class="th_ltb">
+                                  <span>所在部门</span>
+                                </th>
+                                <th class="th_ltb">
+                                  <span>职位</span>
+                                </th>
+                                <th>
+                                  <span>操作</span>
+                                </th>                        
+                              </tr>
+                            </thead>
+                            <tbody id="Tbody" class="userlist">
+                              
+                            </tbody>
+                          </table>
+                          <div id="staffWrap"></div>
+                          <div class="pagenum pagenum_tb" id="page" style="display: none;"></div>
+                        </div>
+                      </div>
+                      <div id="initHtml"></div>
+                      <div class="_tt_emptyplanlist" style="display: none;">
+                        <div class="content">
+                          <span class="text">该部门暂无成员！</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="leftnav">
+                      <div class="defineheight">                        
+                        <div class="checkexitpersonnel">
+                          <div class="viewleave_cp">
+                            <a href="javascript:void(0);">团队信息</a>
+                          </div>
+                          <div class="left_iw">
+                            <form area="TmEnterpriseManage" action="" id="updatetenantinfoform" method="post">
+                              <div class="infoarea_liw">
+                                <ul>
+                                  <li class="clearfix">
+                                    <label>简称</label>
+                                    <div class="iptwrap_iliw">
+                                      <div class="text_iiliw">
+                                        <input type="text" name="Abbreviation" id="shortName" maxlength="12" spellcheck="false" autocomplete="off" value=""></div>
+                                    </div>
+                                  </li>
+                                  <li class="clearfix">
+                                    <label>全称</label>
+                                    <div class="iptwrap_iliw">
+                                      <div class="text_iiliw">
+                                        <input type="text" name="TenantName" id="fullName" maxlength="20" spellcheck="false" autocomplete="off" value=""></div>
+                                    </div>
+                                  </li>
+                                  <li class="clearfix">
+                                    <label>邀请码</label>
+                                    <div class="iptwrap_iliw">
+                                      <div class="text_iiliw">
+                                        <input type="text" name="inviteCode" id="inviteCode" maxlength="20" spellcheck="false" autocomplete="off" value=""></div>
+                                    </div>
+                                  </li>
+                                  <li class="clearfix">
+                                    <div class="submit_iliw">
+                                      <input type="button" value="保存设置" id="btnSave"></div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </form>
+                            <form action="" enctype="multipart/form-data" method="post">
+                              <div class="infoarea_liw">
+                                <div class="logoimg">
+                                  <img src="../public/img/portrait_team_logo.png">
+                                </div>
+                                <ul>
+                                  <li class="clearfix">
+                                    <label>修改团队Logo，支持jpeg、png、bmp格式文件</label>
+                                  </li>
+                                  <li class="clearfix">
+                                    <label>团队LOGO</label>
+                                    <div class="iptwrap_iliw">
+                                      <div class="">
+                                        <input id="File1" type="file" name="logo"></div>
+                                    </div>
+                                  </li>
+                                  <li class="clearfix">
+                                    <div class="submit_iliw">
+                                      <input type="submit" value="保存LOGO" id="teamImg">                          
+                                      <br>                          
+                                      <span style="color: red"></span>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 主区域 -->          
+        </div>
+      </div>
+    </div>
+    <!-- 添加参与人 -->
+    <div class="smember_container" offset-left="206" offset-top="338" style="display: none;">
+      <div class="smember_simple_container">
+        <div class="smember_condition">
+          <div class="smember_condition_all">
+            <div class="smember_header_input">
+              <input autocomplete="off" class="smember_condition_input" type="text" name="content" placeholder="输入同事姓名或邮箱">
+            </div>
+          </div>
+        </div>
+        <div class="smember_search_content">
+          <div class="smember_search_content_left">
+            <div class="smember_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  <div>
+                    <div class="smember_list_empty">输入同事姓名或邮箱</div>
+                  </div>
+                </ul>
+              </div>
+            </div>
+            <div class="smember_search_content_left_footer"></div>
+          </div>
+        </div>      
+        <div class="smember_footer">
+          <div class="smember_footer_group">
+            <a href="javascript:void(0)" class="smember_btn_default" data-handler="Close">关闭</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 添加参与人 -->
+    <!-- 新增员工 -->
+      <div class="popupwrap" id="popupwrap" style="position: absolute; display: none;">
+        <div class="cont_pw">
+          <div class="txt_cpw add">新增员工</div>
+          <div class="search_cpw">
+            <div class="input_name" id="">
+              <input type="text" id="inputName" title="" name="" placeholder="请输入ta的姓名" value="" maxlength="11" class="">
+            </div>
+            <div class="input_phone" id="">
+              <input type="text" id="inputPhone" title="" name="" placeholder="请输入ta的手机" value="" maxlength="11" class="">
+            </div>
+            <div class="input_job" id="">
+              <select class="selectJob">
+                <option value="">-请选择ta的职位-</option>
+                <option value="0">普通成员</option>
+                <option value="1">项目经理</option>
+                <option value="2">部门经理</option>
+              </select>
+            </div>
+            <div class="input_team" id="">
+              <select class="selectTeam">
+                <option value="">-请选择所属部门-</option>
+              </select>
+            </div>
+          </div>
+          <div class="errortip_cpw">
+            <span>格式不正确，正确格式如XXX@XXX.XXX</span>
+          </div>
+          <div class="operate_cpw add">
+            <a href="javascript:void(0);" class="transfer_ocpw" id="submitAdd"> <b><i>确定</i></b> 
+            </a>
+            <a href="javascript:void(0);" class="cancel_ocpw" id="cancelAdd"> <b><i>取消</i></b> 
+            </a>
+          </div>
+        </div>
+      </div>
+    <!-- 新增员工 end -->
+    <!-- 更新员工 -->
+      <div class="userupdate">
+        <div class="cont_pw">
+          <div class="txt_cpw add">更新员工资料</div>
+          <div class="search_cpw">
+            <div class="input_name" id="">
+              <input type="text" id="inputName" title="" name="" placeholder="请输入ta的姓名" value="" maxlength="11" class="">
+            </div>
+            <div class="input_phone" id="">
+              <input type="text" id="inputPhone" title="" name="" placeholder="请输入ta的手机" value="" maxlength="11" class="">
+            </div>
+            <div class="input_job" id="">
+              <select class="selectJob">
+                <option value="0">普通成员</option>
+                <option value="1">项目经理</option>
+                <option value="2">部门经理</option>
+              </select>
+            </div>
+            <div class="input_team" id="">
+              <select class="selectTeam">
+              </select>
+            </div>
+          </div>
+          <div class="errortip_cpw">
+            <span></span>
+          </div>
+          <div class="operate_cpw add">
+            <a href="javascript:void(0);" class="transfer_ocpw" id="submitAdd"> <b><i>确定</i></b> 
+            </a>
+            <a href="javascript:void(0);" class="cancel_ocpw" id="cancelAdd"> <b><i>取消</i></b> 
+            </a>
+          </div>
+        </div>
+      </div>
+    <!-- 更新员工 end -->
+    <!-- 新增部门 start-->
+      <div class="teamadd" id="popupwrap">
+        <div class="cont_pw">
+          <div class="txt_cpw add">新增部门</div>
+          <div class="search_cpw">
+            <div class="input_team_name" id="">
+              <input type="text" id="inputPhone" title="" name="" placeholder="请输入部门名称" value="" maxlength="11" class="">
+            </div>
+          </div>
+          <div class="errortip_cpw">
+            
+          </div>
+          <div class="operate_cpw add">
+            <a href="javascript:void(0);" class="transfer_ocpw" id="submitAdd"> <b><i>确定</i></b> 
+            </a>
+            <a href="javascript:void(0);" class="cancel_ocpw" id="cancelAdd"> <b><i>取消</i></b> 
+            </a>
+          </div>
+        </div>
+      </div>
+    <!-- 新增部门 end -->
+    <div class="_tt_dialog">
+      <div class="content_dialog">
+        <div class="tipsy_dialog ask_dialog"> <b class="ico"></b>
+          <span class="content"></span>
+          此操作不可恢复，您确定删除吗？
+        </div>
+      </div>
+      <div class="uibutton">
+        <a href="javascript:void(0);" class="btn btn-sure sure_dialog">确定</a>
+        <a href="javascript:void(0);" class="btn btn-cancel cancel_dialog">取消</a>
+      </div>
+    </div>
+  </body>
+</html>

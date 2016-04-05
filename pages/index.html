@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>易为码-工作台</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="../public/img/favicon.ico" type="image/x-icon">
+    <script id="index_tasklist" type="text/template">
+      <ul class="list-container">
+      <% if(tasklist.length == 0){%>               
+        <div class="tt_common_emptyinit">
+          <div class="content_emptyinit">
+            <div class="className">暂无任务</div>
+          </div>
+        </div>              
+      <%} else {%>
+        <%_.each(tasklist,function(item){%>
+          <%
+            var startTime = item.tStartDate.split(" ")[0];
+            var endTime = item.tEndDate.split(" ")[0];
+            var startDate = new Date(startTime.replace(/-/g, "/"));
+            var endDate = new Date(endTime.replace(/-/g, "/"));
+            var todayDate = new Date();
+            todayDate.setDate(todayDate.getDate());
+            var days = Math.ceil((endDate - todayDate)/(1000*60*60*24));
+            var status = {0:"未开始",1:"进行中",2:"冻结",3:"已完成",4:"归档"};      
+          %>
+          <li class="planitem">
+            <div class="plan_list_li p2">
+              <div class="right_ttpl">
+                <span class="cycle-placeholder"></span>
+                <%if(days == 0){%>
+                  <span class="date warn">今天</span>                
+                <%}else if(days <= 2){%>
+                  <span class="date warn">剩余<%=days+1%>天</span>
+                <%}else{%>
+                  <span class="date"><%=endTime%></span>
+                <%}%>               
+                <span class="principle"><%=item.proposerName%></span>
+              </div>
+              <div class="left_left">
+                <%if(item.ChildTask.length > 0){%>
+                  <span data-id="<%=item.tId%>" data-name="packup" class="packup icon-minus"></span>
+                <%}%>
+                <span class="status_ttpl_wraper">
+                  <a href="javascript:void(0);" class="status_ttpl icon-taskStatus-<%=item.tStatus%>" original-title="<%=status[item.tStatus]%>" data-id="<%=item.tId%>">
+                    <span class="ico"></span>
+                  </a>
+                </span>
+                <div class="klass_box_ttpl pointer" data-name="update-klass">
+                  <div class="kclass" data-name="kclass-area"></div>
+                  <span class="icon-work-small"></span>
+                  <span class="klass_ttpl"><%=item.ftName%></span>
+                </div>
+              </div>
+              <div class="left_ttpl p2 list_tname">
+                <span data-tid="<%=item.tId%>" data-name="taskName" class=" task-name "><%=item.tName%></span>
+                <div class="all-icons"></div>
+              </div>
+            </div>
+            <div class="child-list-wraper p1" data-id="<%=item.tId%>">
+              <ul class="child-list">
+              <%_.each(item.ChildTask,function(childitem){%>
+                <%
+                  var startTime = childitem.tStartDate.split(" ")[0];
+                  var endTime = childitem.tEndDate.split(" ")[0];
+                  var startDate = new Date(startTime.replace(/-/g, "/"));
+                  var endDate = new Date(endTime.replace(/-/g, "/"));
+                  var todayDate = new Date();
+                  var todayDate = todayDate.setDate(todayDate.getDate());
+                  console.log(todayDate);
+                  var days = Math.ceil((endDate - todayDate)/(1000*60*60*24));
+                %>
+                <li class="planitem">
+                  <span class="border-left"></span>
+                  <span class="icon-task-left-border"></span>
+                  <div class="plan_list_li p1">
+                    <div class="right_ttpl">
+                      <span class="cycle-placeholder"></span>
+                      <%if(days == 0){%>
+                        <span class="date warn">今天</span>                
+                      <%}else if(days <= 2){%>
+                        <span class="date warn">剩余<%=days+1%>天</span>
+                      <%}else{%>
+                        <span class="date"><%=endTime%></span>
+                      <%}%>
+                      <span class="principle"><%=childitem.proposerName%></span>
+                    </div>
+                    <div class="left_left">
+                      <span class="status_ttpl_wraper">
+                        <a href="javascript:void(0);" class="status_ttpl icon-taskStatus-<%=childitem.tStatus%> " original-title="<%=status[childitem.tStatus]%>" data-id="<%=childitem.tId%>">
+                          <span class="ico"></span>
+                        </a>
+                      </span>
+                    </div>
+                    <div class="left_ttpl p1">
+                      <span data-tid="<%=childitem.tId%>" data-name="taskName" class="child task-name "><%=childitem.tName%></span>
+                      <div class="all-icons"></div>
+                    </div>
+                  </div>
+                </li>
+              <%});%>
+              </ul>
+            </div>
+          </li>
+        <%});%>        
+      <%}%>
+      </ul>
+      <div class="showmore" data-name="showmore" style="display: none;">
+        <a href="javascript:void(0);" class="text_fsm">
+          <span>查看更多</span>
+        </a>
+      </div>
+    </script>
+    <script id="project_onetask" type="text/template">
+      <%var startTime = task.tStartDate.substring(0,10);
+        var endTime = task.tEndDate.substring(0,10);
+        var startDate = new Date(startTime.replace(/-/g, "/"));
+        var endDate = new Date(endTime.replace(/-/g, "/"));
+        var todayDate = new Date();
+        var days = (endDate - todayDate)/(1000*60*60*24);
+        var timetype = 1;
+        todayDate.setDate(todayDate.getDate());
+        if(todayDate > endDate){
+          timetype = 0;
+        }else if(todayDate < startDate){
+          var days = Math.ceil((endDate - startDate)/(1000*60*60*24));
+        }else{
+          var days = Math.ceil((endDate - todayDate)/(1000*60*60*24));
+        }
+        var fquser,fzuser,cyuser = "";
+        _.each(user,function(item){
+          if(item.uRole == "0"){
+            fzuser = item;
+          }else if(item.uRole == "1"){
+            fquser = item.nickName;
+          }else{
+            cyuser += item.nickName + ",";
+          }
+        });
+        cyuser = cyuser.substring(0,cyuser.length - 1);
+      %>
+      <div class="action" data-name="pull-screen-action" style="display: block;">       
+        <span class="close-pull-screen" data-name="pull-screen-close"></span>
+      </div>
+      <div data-name="pull-screen-content">
+        <div class="task-detail-layout">
+          <div data-name="task-detail-unaccept">
+            <div class="ux_edittask_accept">
+              <div class="ux_edittask_accept"></div>
+            </div>
+          </div>
+          <div data-name="task-detail-relate"></div>
+          <div data-name="task-detail-action">
+            <div class="tt_plandetailtopbar">
+              <ul class="btnlist_pdtb">
+                <% var status = {0:"未开始",1:"进行中",2:"冻结",3:"已完成",4:"归档"}%>
+                <li class="plandetail_status" data-name="task-set-status" data-status="<%=task.tStatus%>">
+                  <a href="javascript:void(0);" class="status_bpdtb tt_actionstatus_<%=task.tStatus%>" original-title="<%=status[task.tStatus]%>">
+                    <span class="ico"></span>
+                  </a>
+                  <span class="status_value_show"><%=status[task.tStatus]%></span>
+                </li>
+                <%if(uid == fzuser.uId){%>
+                <li>
+                  <a href="javascript:void(0);" class="del_bpdtb" original-title="删除" data-name="set-task-delete"></a>
+                </li>
+                <%}%>               
+              </ul>
+              <div class="_tt_dialog" style="min-width: 50px; min-height: 37px; z-index: 1001; position: absolute; top: 43px; left: 12.5px; display: none;">
+                <div class="arrow top" style="display: none; left: 105px;"></div>
+                <div class="content_dialog">
+                  <div class="tipsy_dialog ask_dialog"> <b class="ico"></b>
+                    <span class="content"></span>
+                    此操作不可恢复，您确定删除吗？
+                  </div>
+                </div>
+                <div class="uibutton">
+                  <a data-bypass="" href="javascript:void(0);" class="btn btn-sure sure_dialog">确定</a>
+                  <a href="javascript:void(0);" title="" class="btn btn-cancel cancel_dialog">取消</a>
+                </div>
+              </div>
+              <div class="tt_changestatusview" style="position: absolute; left: 10px; z-index: 1000; display: none;">
+                <ul>
+                  <li data-status="0">
+                    <a href="javascript:void(0);" title="">
+                      <span class="ico icon-taskStatus-0"></span>
+                      未开始
+                    </a>
+                  </li>
+                  <li data-status="1">
+                    <a href="javascript:void(0);" title="">
+                      <span class="ico icon-taskStatus-1"></span>
+                      进行中
+                    </a>
+                  </li>
+                  <li data-status="2">
+                    <a href="javascript:void(0);" title="">
+                      <span class="ico icon-taskStatus-2"></span>
+                      冻结
+                    </a>
+                  </li>
+                  <li data-status="3">
+                    <a href="javascript:void(0);" title="">
+                      <span class="ico icon-taskStatus-3"></span>
+                      已完成
+                    </a>
+                  </li>
+                  <li data-status="4">
+                    <a href="javascript:void(0);" title="">
+                      <span class="ico icon-taskStatus-4"></span>
+                      归档
+                    </a>
+                  </li>          
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div data-name="task-detail-scroll" class="task-detail-scroll" style="height: 238px;">
+            <div data-name="task-detail-info">
+              <div class="ux_edittask_info_container">
+                <div class="status icon-status-<%=task.tStatus%>"></div>
+                <%if(uid == fzuser.uId){%>
+                <div class="input-default task-edit" data-name="task-detail-name">
+                  <textarea class="task-title-input input-default input_container"><%=task.tName%></textarea>
+                </div>
+                <div class="task-detail-des">
+                  <textarea class="task_detail_description_type input_container" text-origion="任务详情" placeholder="请输入任务描述" data-type="Descripition"><%=task.tDescribe%></textarea>
+                </div>
+                <%}else{%>
+                <div class="input-default task-edit" data-name="task-detail-name">                 
+                  <textarea class="task-title-input input-default input_container" readonly><%=task.tName%></textarea>
+                </div>
+                <div class="task-detail-des">
+                  <textarea class="task_detail_description_type input_container" text-origion="任务详情" placeholder="请输入任务描述" data-type="Descripition" readonly><%=task.tDescribe%></textarea>
+                </div>
+                <%}%>
+              </div>
+            </div>
+            <div class="task-extra-info" data-name="ux-customizetDatas" style="display: none;"></div>
+            <div data-name="task-detail-evaluation"></div>
+            <div data-name="task-detail-base-info">
+              <div id="276678_3006721_7_20_635919221396123406" class="ux_editask_base">
+                <div class="base-item" data-name="date-area">
+                  <div class="left-eb">
+                    <span class="icon-date ico-eb"></span>
+                    <span>起止时间</span>
+                  </div>
+                  <span class="set-task-date" data-name="set-task-date" data-sdate="<%=startTime%>" data-edate="<%=endTime%>"><%=startTime%> -- <%=endTime%></span>
+                  <a href="javascript:void(0)" class="edit-button" data-name="task-detail-date-edit">修改</a>
+                  <span class="remain overdue">
+                  <%if(timetype){%>
+                    剩余 <%=days%> 天
+                  <%}%>            
+                  </span>
+                </div>
+                <ul class="all-more" data-name="task-detail-all-info">
+                  <li class="item-am">
+                    <div class="base-item-warp">
+                      <div class="base-item" data-name="prical-area">
+                        <div class="left-eb">
+                          <span class="icon-person ico-eb"></span>
+                          <span class="task-fzr-uid" data-uid="<%=fzuser.uId%>">负责人</span>
+                        </div>
+                        <%=fzuser.nickName%>
+                      </div>
+                    </div>
+                    <div class="base-item-warp">
+                      <div class="base-item">
+                        <div class="left-eb">
+                          <span class="icon-person-add ico-eb"></span>
+                          <span>发起人</span>
+                        </div>
+                        <%=fquser%>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-am">
+                    <div class="base-item-warp">
+                      <div class="base-item" data-name="participators-area">
+                        <div class="left-eb ico-eb">
+                          <span class="icon-box-add ico-eb"></span>
+                          <span>参与人</span>
+                        </div>
+                        <ul class="partner users-radius">
+                          <li class="last-add">
+                            <span class="cyuser-result"><%=cyuser%></span>
+                            <%if(uid == fzuser.uId){%>
+                            <a class="taskdetail-add-partner" href="javascript:void(0);" data-name="task-add-partner">添加</a>
+                            <%}%>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-am">
+                    <%if(uid == fzuser.uId){%>
+                    <div class="base-item-warp">
+                      <div class="base-item" data-name="class-container-wrap">
+                        <div class="left-eb">
+                          <span class="icon-task-progress ico-eb"></span>
+                          <span>进度</span>
+                        </div>
+                        <input class="project_task_progress_type input_container" data-type="Progress" value="<%=task.tSchedule%>%">
+                      </div>
+                    </div>
+                    <div class="base-item-warp">
+                      <div class="base-item">
+                        <div class="left-eb">
+                          <span class="icon-lock-open ico-eb"></span>
+                          <span>优先级</span>
+                        </div>
+                        <select class="project_task_priority">
+                          <%if(task.tPriority == "0"){%>
+                            <option value="0">特急</option>
+                            <option value="1">重要</option>
+                            <option value="2">一般</option>
+                          <%}else if(task.tPriority == "1"){%>
+                            <option value="1">重要</option>
+                            <option value="2">一般</option>
+                            <option value="0">特急</option>
+                          <%}else{%>
+                            <option value="2">一般</option>
+                            <option value="1">重要</option>                   
+                            <option value="0">特急</option>
+                          <%}%>
+                        </select>
+                      </div>
+                    </div>
+                    <%}else{%>
+                    <div class="base-item-warp">
+                      <div class="base-item" data-name="class-container-wrap">
+                        <div class="left-eb">
+                          <span class="icon-task-progress ico-eb"></span>
+                          <span>进度</span>
+                        </div>
+                        <span><%=task.tSchedule%>%</span>
+                      </div>
+                    </div>
+                    <div class="base-item-warp">
+                      <div class="base-item">
+                        <div class="left-eb">
+                          <span class="icon-lock-open ico-eb"></span>
+                          <span>优先级</span>
+                        </div>
+                        <span>
+                          <%if(task.tPriority == "0"){%>
+                            特急
+                          <%}else if(task.tPriority == "1"){%>
+                            重要
+                          <%}else{%>
+                            一般
+                          <%}%>
+                        </span>
+                      </div>
+                    </div>
+                    <%}%>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <%if(task.ftType == 0){%>
+            <div data-name="task-detail-container">
+              <div data-name="ux-edittask-area"></div>
+              <div data-name="task-apply"></div>
+              <div data-name="task-detail-task-list">
+                <div id="276678_3006721_7_20_635919221396123406">
+                  <div class="task-detail-moduletitle">
+                    <div class="icon">
+                      <span class="icon-task-lighthight icon-dt"></span> <em class="caret"></em>
+                    </div>
+                    <div class="text">
+                      子任务(
+                      <%var total = childtask.total? childtask.total : 0;%>
+                      <span data-name="task-detail-task-total"><%=total%></span>
+                      )
+                    </div>
+                  </div>
+                  <div class="module-content">
+                    <div data-name="task-detail-task-add">
+                      <div id="276678_3006721_7_20_635919221396123406_task-task" class="tt-task-create task-create-none-class">
+                        <div class="task-create-laytout-input layout-border" data-name="task-create-add-input">
+                          <div class="task-create-add-task-container" data-name="task-create-add-task-container">
+                            <div class="task-create-class" data-name="task-create-class"></div>
+                            <div class="task-create-name-container" data-name="task-create-name">
+                              <div class="ns-task-create-name">
+                                <span class="ico-name icon-task-txt"></span>
+                                <input class="has-icon" data-name="task-create-name" type="text" placeholder="输入任务名称" value="">      
+                                <div data-name="task-create-name-dropdown"></div>
+                              </div>
+                            </div>
+                            <div class="task-create-right-part">
+                              <div class="task-create-principle-area" data-name="task-create-principle-area">
+                                <div class="ns-task-principle" data-smemberid="smember_9706">
+                                  <span class="border"></span>
+                                  <div class="task-create-principle">
+                                    <span class="task-create-principle-inner" data-name="task-create-principle-inner">
+                                      <span class="icon-task-creater"></span>
+                                      <label class="task-create-principle-label" data-name="task-create-principle-label">选择负责人</label>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-create-date-container" data-name="task-create-date">
+                                <div class="ns-task-create-date">
+                                  <span class="border"></span>
+                                  <div class="task-create-date-inner" data-name="task-create-date-box" original-title="起止时间：2016/02/25 08:00-2016/02/25 18:00">
+                                    <span class="ico icon-task-during" data-name="task-create-date-ico"></span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="task-create-layout-tools clearfix layout-border" data-name="task-create-tools" style="display: block;">
+                          <div class="task-create-tools-item-wraper" data-name="task-create-hour-date"></div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-participator">
+                            <div>
+                              <span data-name="task-create-participator" class="task-create-tools-item task-create-participator" title="添加参与者">
+                                <a href="javascript:void(0)" class="task-create-tools-link task-create-add-icon ">参与者</a>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-apply-user">
+                            <div class="ns-task-create-applyuser">
+                              <span class="border"></span>
+                              <span class="task-create-tools-item task-create-applyuser-wraper" title="发起人">
+                                <a class="task-create-tools-link task-create-applyuser-icon " href="javascript:void(0)" data-name="task-create-applyuser" data-smemberid="smember_8942">发起人：</a>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-external-person"></div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-replace">
+                            <div class="create-replace-box">
+                              <span class="border"></span>
+                              <div class="task-create-tools-item task-create-replace disable">
+                                <span class="task-create-replace-label" data-name="task-create-replace-label">优先级：</span>
+                                <select class="priority">
+                                  <option value="1">重要</option>
+                                  <option value="0">特急</option>
+                                  <option value="2">一般</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="task-create-layout-extend layout-border" data-name="task-create-layout-extend">
+                          <div class="task-create-member-list">
+                            <em class="ux_add_btn" data-name="add-user-btn" data-smemberid="smember_5741"></em>
+                            <p class="participant_taskuser_result"></p>
+                          </div>
+                        </div>
+                        <div class="task-create-richeditor layout-border" data-name="task-create-richeditor" style="display: block;">
+                          <div class="redactor_box">
+                            <textarea class="redactor_content" name="content" placeholder="任务描述"></textarea>
+                          </div>
+                        </div>
+                        <div class="task-create-bottom" data-name="task-create-bottom">
+                          <div class="task-create-bottom-box">
+                            <div class="task-create-bottom-wraper clearfix">
+                              <div class="ux_publish">
+                                <a class="btn btn-sure" href="javascript:void(0);" title="发布" data-name="set-pub-btn">发布</a>
+                              </div>
+                            </div>
+                            <div class="error_container"></div>
+                            <div class="preview_container">
+                              <ul class="tita-upload-preview"></ul>
+                            </div>
+                            <div class="loading_view"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div data-name="task-detail-task-list">
+                      <div class="tt_planlist">
+                        <ul class="list-container task-list-container">
+                          <%_.each(childtask.dataList,function(childitem){%>
+                            <li class="planitem" style="border-top-style: none;">
+                              <div class="plan_list_li p2">
+                                <div class="right_ttpl">
+                                  <span class="cycle-placeholder"></span>
+                                  <span class="date warn"><%=childitem.tEndDate%></span>
+                                  <span class="principle"><%=childitem.proposerName%></span>
+                                  <span class="sup-delete" data-name="plan-delete" data-id="<%=childitem.tId%>">删除</span>
+                                </div>
+                                <div class="left_left">
+                                  <span class="status_ttpl_wraper">
+                                    <a href="javascript:void(0);" class="status_ttpl icon-taskStatus-<%=childitem.tStatus%>" original-title="<%=status[childitem.tStatus]%>">
+                                      <span class="ico"></span>
+                                    </a>
+                                  </span>
+                                </div>
+                                <div class="left_ttpl p2">
+                                  <span data-tid="<%=childitem.tId%>" data-name="taskName" class="task-name"><%=childitem.tName%></span>
+                                  <div class="all-icons">
+                                    <!-- <span class="task-tag-placeholder"></span>
+                                  -->
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="child-list-wraper p2">
+                                <ul class="child-list hide"></ul>
+                              </div>
+                            </li>
+                          <%})%>                         
+                      </ul>
+                      <div class="showmore" data-name="showmore" style="display: none;">
+                        <a href="javascript:void(0);" class="text_fsm">
+                          <span>查看更多</span>
+                        </a>
+                      </div>
+                      <div class="_tt_dialog" style="min-width: 50px; min-height: 37px; z-index: 1001; position: absolute; top: 22px; left: 457px; display: none;">
+                        <div class="arrow top" style="display: none; left: 210px;"></div>
+                        <div class="content_dialog">
+                          <div class="tipsy_dialog ask_dialog"> <b class="ico"></b>
+                            <span class="content"></span>
+                            此操作不可恢复，您确定删除吗？
+                          </div>
+                        </div>
+                        <div class="uibutton">
+                          <a href="javascript:void(0);" class="btn btn-sure sure_dialog">确定</a>
+                          <a href="javascript:void(0);" title="" class="btn btn-cancel cancel_dialog">取消</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="work_hour_content_wraper" data-name="task-detail-work-hour-list-box">
+                    <ul data-name="task-detail-work-hour-list"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <%}%>
+            <div data-name="task-detail-work-hour"></div>
+            <div data-name="task-detail-meet"></div>
+            <div data-name="task-detail-travel"></div>
+            <div data-name="task-detail-share"></div>
+            <div data-name="task-detail-follower"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </script>
+    <script id="work_dialog" type="text/template">
+      <%console.log(worklist);
+      _.each(worklist,function(item){
+      if(item.pStatus == "0" || item.pStatus == "1"){
+      %>
+      <div data-name="work-box">
+        <div class="tt_klass_work">
+          <div class="title_kw select-item" data-name="work-title" data-id="<%=item.pId%>" data-type="0" data-sdate="<%=item.pStartDate%>" data-edate="<%=item.pEndDate%>">
+            <%if(item.task.length != 0){%>
+            <span class="select-icon icon-minus-square"></span>
+            <span class="icon-work-small"></span>
+            <%}else{%>
+            <span class="icon-work-small" style="margin-left: 28px;"></span>
+            <%}%>
+            <span><%=item.pName%></span>
+          </div>
+          <ul class="project-list">
+            <%_.each(item.task,function(task){%>
+            <li>
+              <span class="border-left"></span>
+              <span class="icon-task-left-border"></span>
+              <div class="task_details select-item" data-id="<%=task.tId%>" data-type="1" data-sdate="<%=task.tStartDate%>" data-edate="<%=task.tEndDate%>">
+                <%if(task.ChildTask.length != 0){%>
+                  <span data-id="13127" data-name="packup" class="packup icon-minus"></span>
+                <%}%>
+                <span class="status_ttpl_wraper">
+                  <a href="javascript:void(0);" class="status_ttpl icon-taskStatus-<%=task.tStatus%>">
+                    <span class="ico"></span>
+                  </a>
+                </span>
+                <span><%=task.tName%></span>
+              </div>
+              <div class="child-list-wraper p2">
+                <ul class="child-list">
+                  <%_.each(task.ChildTask,function(childtask){%>
+                    <li class="planitem">
+                      <span class="border-left last"></span>
+                      <span class="icon-task-left-border"></span>
+                      <div class="childtask_details select-item" data-id="<%=childtask.tId%>" data-type="1" data-sdate="<%=childtask.tStartDate%>" data-edate="<%=childtask.tEndDate%>">
+                        <span href="javascript:void(0);" class="status_ttpl icon-taskStatus-<%=childtask.tStatus%>"></span>
+                        <span><%=childtask.tName%></span>
+                      </div>
+                    </li>
+                  <%});%>
+                </ul>
+              </div>
+            </li>
+            <%});%>
+          </ul>
+        </div>
+      </div>
+      <%}});%>
+    </script>
+    <link rel="stylesheet" href="../public/css/index.css">
+    <link rel="stylesheet" href="../public/css/index-1512011029.min.css">
+    <link rel="stylesheet" href="../public/css/lib.css">
+    <link rel="stylesheet" href="../public/css/all.css">
+    <link rel="stylesheet" href="../public/css/tipsy.css">
+    <link rel="stylesheet" href="../public/css/bootstrap-datetimepicker.min.css">
+    <script src="../public/js/require.js" data-main="../public/js/index.js?v=23"></script>
+  </head>
+  <body>
+    <div id="bs_layout_container">
+      <div class="tt_layout_warp">
+        <div id="header-region">
+          <div class="_tt_header">
+            <a class="logo logo_1" href="" title="返回首页"></a>
+            <span class="brand"></span>
+            <ul class="_tt_headnav" data-name="head-nav">
+              <!-- <div class="tt-header-extention">
+                <li class="guide_tthn ico_tthn" original-title="">
+                  <a href="javascript:void(0);" original-title="tita入门"></a>
+                </li>
+                <li class="inivte_tthn ico_tthn">
+                  <a href="/u/200849439/Invite/InviteMoreIndex" data-name="invite-member" original-title="邀请同事"></a>
+                </li>
+              </div>
+              <li class="task_tthn ico_tthn" data-name="head-task">
+                <a href="#more/tasks" original-title="任务中心"></a>
+              </li>
+              <li class="todo_tthn ico_tthn" data-name="head-to-do">
+                <a href="#more/messages?messageType=1" data-name="no-msg" original-title="待办">
+                  <span class="red-remind-num" data-name="head-to-do-indicator" style="display: none;">0</span>
+                </a>
+              </li>
+              <li class="msg_tthn ico_tthn" data-name="head-message">
+                <a href="#more/messages?messageType=2&amp;isRead=2" data-name="no-msg" original-title="通知">
+                  <div class="red-remind-num" data-name="head-message-indicator" style="display: none;">0</div>
+                </a>
+              </li> -->
+              <li class="logout_tthn" tabindex="0">
+                <a href="javascript:void(0);" class="avatar_ltthn">
+                  <span class="radius_img30 radius_img30" style="background-color:#f5b168;" original-title=""></span>
+                </a>
+                <a href="javascript:void(0);" class="namewrap_tthn"><span class="name_tthn"></span><b class="caret"></b></a>
+                <ul class="menu_ltthn">
+                  <!-- <li class="profile_ltthn"><a href="#italent/home?name=TalentProfile-record">个人主页</a></li>
+                  <li class="archives_ltthn"><a href="#more/archives">简档编辑</a></li>
+                  <li class="set_ltthn"><a href="#set?url=http://www.tita.com/u/200849439/Setting/Avatar&amp;page_id=avatar">个人设置</a></li> -->
+                  <li><a class="logout-btn" data-name="logout" href="javascript:void(0);">退出登录</a></li>
+                </ul>
+              </li>
+            </ul>
+            <!-- <div class="tt_headsearch" data-name="head-search">
+              <div class="text_tths" style="width: auto; display: none;">
+                <input type="search" placeholder="搜索同事、动态、项目等"></div>
+              <a href="javascript:void(0);" class="btn_tths" data-name="head-search-button" original-title="搜索全站内容"></a>
+            </div> -->
+          </div>
+        </div>
+        <div class="_tt_layout_body">
+          <div id="sidebar-region">
+            <ul class="_tt_sidenav" style="min-height: 950px;">
+              <li class="active">
+                <a href="./index.html" class="bench_ttsn" data-type="HomeBench" id="fbaea0c9-45d4-4a69-b5fd-333e80d392a9" target=""> 
+                  <strong></strong><span>工作台</span> 
+                </a>
+              </li>
+              <li>
+                <a href="./home.html" class="home_ttsn" data-type="HomeDynamic" id="c1a9a11b-7a61-4578-943c-25499322aeea" target=""> 
+                  <strong></strong><span>动态</span>  
+                  <em class="red-remind" data-name="tita-sidebar-home-indicator"></em>
+                </a>
+              </li>
+              <li>
+                <a href="./work.html" class="work_ttsn" data-type="HomeWork" id="6a647758-3bdb-4669-8ad8-5526a535e176" target=""> 
+                  <strong></strong><span>项目</span>    
+                </a>
+              </li>
+              <li>
+                <a href="./daily.html" class="daily_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target=""> 
+                  <strong></strong><span>日报</span>
+                </a>
+              </li>
+              <li>
+                <a href="./report.html" class="report_ttsn" data-type="HomePlanStatistic" id="6db951ce-677d-4e3d-907d-67956828a312" target=""> 
+                  <strong></strong><span>报表</span>
+                </a>
+              </li>
+              <li>
+                <a href="./staff.html" class="staff_ttsn" data-type="HomeStaff" id="ebdd2fc3-fba3-41bf-8d13-9121b0921cd3" target=""> 
+                  <strong></strong><span>团队</span>
+              </a>
+              </li>
+              <li>
+                <a href="./apply.html" class="apply_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target=""> 
+                  <strong></strong><span>应用</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div id="main-region" class="_tt_layout_container_fluid" style="min-height: 803px;">
+            <div class="tt_layout_bench">
+              <div class="tt_tab_page">
+                <ul class="tab_tp" data-name="bench-tab">
+                  <li class="active" data-type="my"><a href="javascript:void(0);" data-trigger="false">我的工作</a></li>
+                  <li data-type="group"><a href="javascript:void(0);" data-trigger="false">团队工作</a></li>
+                </ul>
+                <!-- <span class="down_tb">
+                  <a href="javascript:void(0);" class="tt-guide" data-name="intro-plan"><span class="icon-light"></span>计划入门</a>
+                </span> -->
+            </div>
+            <div class="_tt_layout_home_right" data-name="right-container">
+              <div class="tt_enter_tms" data-name="enter-tms" style="display:none;">
+                <div class="tt_entertms">
+                  <div class="bench-basic-modules">
+                    <div class="title_bbm">
+                      <div class="left_bbm">
+                        <span class="name_bbm">我是超级管理员</span>
+                        <a class="icon-help" original-title="管理员常用操作说明" data-name="guide" href="javascript:void(0);"></a>
+                      </div>
+                    </div>
+                    <div class="btn-container">              
+                      <div class="clearfix">
+                        <a class="btn-sure btn-add" href="./staff.html">添加/管理员工</a>
+                        <a class="btn-sure" href="./staff.html">管理组织架构</a>
+                      </div>
+                        <a class="btn enter-admin" href="javascript:void(0);" target="_blank">进入后台管理</a>
+                    </div>
+                  </div>
+                  <a href="./staff.html" class="a-link-block">
+                      <div class="invite-more clearfix">
+                          <img src="../public/img/invite-colleagues.png" alt="添加员工">
+                          <div class="text">
+                              <div class="invite-text">
+                                  添加员工
+                              </div>
+                              <div class="desc-text">
+                                  开启团队协作模式
+                              </div>
+                          </div>
+                          <span class="icon-arrow-right"></span> 
+                      </div>
+                  </a>
+                </div>
+              </div>
+              <div data-name="bench-right-3">
+                <div>
+                  <div class="bench-basic-modules">
+                    <div class="title_bbm">
+                      <div class="left_bbm">
+                        <span class="name_bbm">我的今日日报</span>
+                      </div>
+                    </div>
+                    <div class="cont_bbm" data-name="bench-daily-container">
+                      <div class="tt_bench_my_daily">
+                        <p>
+                          <span class="icon-dialog-closed-warn icon_d"></span>
+                          <span class="status_dc">未提交</span>
+                        </p>
+                        <div class="evaluation_d">
+                          <span></span>
+                        </div>
+                        <div class="action_d">
+                          <a href="./daily.html">
+                            <button class="btn" data-name="write-daily">写日报</button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="_tt_layout_home_container">
+              <div data-name="bench-plan">
+                <div>
+                  <div class="tt_bench_myplan">
+                    <div data-name="week-box">
+                      <div>
+                        <div class="tt_bench_plan_time">
+                          <div class="left">
+                            <div class="left_time" data-name="date-box">
+                              <span class="week" data-name="week"></span>
+                              <span class="date"><span data-name="month"></span>月<span data-name="day"></span>日<br><span data-name="year"></span>年</span>
+                              <input class="ywm_datetimepicker" id="datetimepicker" type="text" >
+                            </div>
+                          </div>
+                          <div class="right">
+                            <ul class="right_week" data-name="week-list">
+                              <li class="week_list" data-date="">
+                                <span class="name_list">
+                                  <a data-trigger="false" href="javascript:void(0);">周一</a>
+                                </span>
+                                <span class="caret"></span>
+                              </li>
+                              <li class="week_list" data-date="">
+                                <span class="name_list">
+                                  <a data-trigger="false" href="javascript:void(0);">周二</a>
+                                </span>
+                                <span class="caret"></span>
+                              </li>
+                              <li class="week_list" data-date="">
+                                <span class="name_list">
+                                  <a data-trigger="false" href="javascript:void(0);">周三</a>
+                                </span>
+                                <span class="caret"></span>
+                              </li>
+                              <li class="week_list" data-date="">
+                                <span class="name_list">
+                                  <a data-trigger="false" href="javascript:void(0);">周四</a>
+                                </span>
+                                <span class="caret"></span>
+                              </li>
+                              <li class="week_list" data-date="">
+                                <span class="name_list">
+                                  <a data-trigger="false" href="javascript:void(0);">周五</a>
+                                </span>
+                                <span class="caret"></span>
+                              </li>
+                              <li class="week_list" data-date="">
+                                <span class="name_list">
+                                  <a data-trigger="false" href="javascript:void(0);">周六</a>
+                                </span>
+                                <span class="caret"></span>
+                              </li>
+                              <li class="week_list" data-date="">
+                                <span class="name_list">
+                                  <a data-trigger="false" href="javascript:void(0);">周日</a>
+                                </span>
+                                <span class="caret"></span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    <!-- 添加任务 -->
+                    <div data-name="plan-cereate-form">
+                      <div id="Becnh-Plan-undefined" class="tt-task-create">
+                        <div class="task-create-laytout-input layout-border" data-name="task-create-add-input">
+                          <div class="task-create-add-task-container" data-name="task-create-add-task-container">
+                            <div class="task-create-class" data-name="task-create-class" data-type="2">
+                              <div class="task-create-class-wraper clearfix">
+                                <div class="task-create-class-innder " data-name="task-create-class">
+                                  <span data-name="task-create-class-name" class="task-create-class-name active">项目/任务</span>
+                                  <span class="icon-arrow-down"></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="task-create-name-container" data-name="task-create-name">
+                              <div class="ns-task-create-name">
+                                <span class="border"></span>
+                                <span class="ico-name icon-task-txt"></span>
+                                <input class="has-icon" data-name="task-create-name" type="text" placeholder="输入任务名称" value="">
+                                <div data-name="task-create-name-dropdown"></div>
+                              </div>
+                            </div>
+                            <div class="task-create-right-part">
+                              <div class="task-create-principle-area" data-name="task-create-principle-area">
+                                <div class="ns-task-principle" data-smemberid="smember_9096">
+                                  <span class="border"></span>
+                                  <div class="task-create-principle">
+                                    <span class="task-create-principle-inner" data-name="task-create-principle-inner">
+                                      <span class="icon-task-creater"></span>
+                                      <label class="task-create-principle-label" data-name="task-create-principle-label">选择负责人</label>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-create-date-container" data-name="task-create-date">
+                                <div class="ns-task-create-date">
+                                  <span class="border"></span>
+                                  <div class="task-create-date-inner" data-name="task-create-date-box" original-title="">
+                                    <span class="ico icon-task-during" data-name="task-create-date-ico"></span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>                    
+                        </div>
+
+                        <div class="task-create-layout-tools clearfix layout-border" data-name="task-create-tools" style="display: none;">
+                          <div class="task-create-tools-item-wraper" data-name="task-create-hour-date"></div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-participator">
+                            <div>
+                              <span data-name="task-create-participator" class="task-create-tools-item task-create-participator" title="添加参与者">
+                                <a href="javascript:void(0)" class="task-create-tools-link task-create-add-icon ">
+                                  参与者
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-apply-user">
+                            <div class="ns-task-create-applyuser">
+                              <span class="border"></span>
+                              <span class="task-create-tools-item task-create-applyuser-wraper" title="发起人">
+                                <a class="task-create-tools-link task-create-applyuser-icon " href="javascript:void(0)" data-name="task-create-applyuser" data-smemberid="smember_8942">发起人：</a>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-external-person"></div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-replace">
+                            <div class="create-replace-box">
+                              <span class="border"></span>
+                              <div class="task-create-tools-item task-create-replace disable">
+                                <span class="task-create-replace-label" data-name="task-create-replace-label">优先级：</span>
+                                <select class="priority">
+                                  <option value="1">重要</option>
+                                  <option value="0">特急</option>
+                                  <option value="2">一般</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 添加参与者 -->
+                        <div class="task-create-layout-extend layout-border" data-name="task-create-layout-extend">
+                          <div class="task-create-member-list">
+                            <em class="ux_add_btn" data-name="add-user-btn" data-smemberid="smember_9773"></em>
+                            <p class="participant_taskuser_result"></p>
+                          </div>
+                        </div>
+                        <!-- 添加参与者 -->
+                        <div class="task-create-richeditor layout-border has-extend" data-name="task-create-richeditor" style="display: none;">
+                          <div class="redactor_box">
+                            <textarea class="redactor_content" name="content" placeholder="任务描述"></textarea>
+                          </div>
+                        </div>
+
+                        <div class="task-create-bottom" data-name="task-create-bottom">
+                          <div class="task-create-bottom-box">
+                            <div class="task-create-bottom-wraper clearfix">
+                              <div class="ux_publish">                  
+                                <span class="toggle" data-name="toggle">
+                                  <span class="l">更多信息</span>
+                                  <span class="r icon-arrow-down-double"></span>
+                                </span>
+                                <a class="btn btn-sure btn-disabled" href="javascript:void(0);" title="发布" data-name="set-pub-btn">发布</a>
+                              </div>
+                            </div>
+                            <div class="error_container"></div>
+                            <div class="preview_container">
+                              <ul class="tita-upload-preview"></ul>
+                            </div>
+                            <div class="loading_view"></div>
+                          </div>
+                        </div>
+                        <!-- 选择项目 -->
+                        <div class="tt_class_dialog" style="top: 2px; left: 1px;">
+                          <div class="top_cd">
+                            <ul class="tab_cd" data-name="klass-tab">
+                              <li data-type="4" class="active">选择关联项目/任务</li>               
+                            </ul>
+                            <span class="icon-dialog-closed closed_cd" data-name="klass-close"></span>
+                          </div>
+                          <div class="box_cd">
+                            <div data-name="klass-content" class="plan-klass-content">
+                              <div class="tt_class_tree">
+                                <div class="cont_rd">
+                                  <div class="tt_tree_view">
+                                    
+                                    
+                                  </div>
+                                </div>
+                                <div class="bottom_rd" data-name="work-action">
+                                  <button class="btn btn-cancel reset_rd" data-name="klass-move-reset">清空选项</button>
+                                  <button class="btn btn-cancel cancel_rd" data-name="work-move-cancel">取消</button>
+                                  <button class="btn btn-sure sure_rd" data-name="work-move-submit">确定</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 选择项目 -->                     
+                      </div>
+                    </div>       
+                    <!-- 添加任务 -->
+
+                    <!-- 当前任务列表 -->
+                    <div class="tt_bench_plan_list" data-name="bench-plan-area">
+                      <div class="tt_bench_planlist_title" data-name="plan-title" style="display: block;">
+                        <span class="today_plt" original-title="收起" data-name="toggle-today">
+                          <span class="txt">当日任务</span>
+                          <span class="icon icon-w-arrow-up-double"></span>
+                        </span>
+                      </div>
+                      <div data-name="plan-list" style="display: block;">
+                        <div class="tt_planlist">
+                          
+                         
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 当前任务列表 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="pull-screen-region">
+        <div class="pull-screen-container" style="top: 40px; right: 0px; width: 820px; height: 323px;">
+            
+          <div data-name="pull-screen-load"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- 添加负责人 -->
+    <div class="smember_container smember_container_fzr" style="display: none;">
+      <div class="smember_simple_container">
+        <div class="smember_condition">
+          <div class="smember_condition_all">
+            <div class="project_user_principal">
+              <input autocomplete="off" class="smember_condition_input" type="text" name="content" placeholder="输入同事姓名">
+            </div>
+          </div>
+        </div>
+        <div class="smember_search_content">
+          <div class="smember_search_content_left">
+            <div class="smember_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  
+                </ul>
+              </div>
+            </div>
+            <div class="smember_search_content_left_footer"></div>
+          </div>
+        </div>      
+        <div class="smember_footer">
+          <div class="smember_footer_group">
+            <a href="javascript:void(0)" class="smember_btn_default" data-handler="Close">关闭</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 添加参与人 -->
+    <div class="smember_container smember_container_cyr" style="display: none;">
+      <div class="smember_muti_container">
+        <div class="smember_header">
+          选择人员
+          <a href="javascript:void(0)" class="smember_btn_close" data-handler="Close"></a>
+        </div>
+        <div class="smember_condition">
+          <div class="smember_condition_all">
+            <div class="smember_form_container">
+              <div class="smember_header_input">
+                <input autocomplete="off" class="smember_condition_input" type="text" name="content" placeholder="输入同事姓名"></div>
+            </div>
+          </div>
+        </div>
+        <div class="smember_search_content">
+          <div class="smember_search_content_left">
+            <div class="smember_tab">
+              成员
+            </div>
+            <div class="smember_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  <div>
+                    <div class="smember_list_empty">输入同事姓名</div>
+                  </div>
+                </ul>
+              </div>
+            </div>
+            <div class="smember_search_content_left_footer"></div>
+          </div>
+          <div class="smember_search_content_center">
+            <span class="smember_search_arrow_icon"></span>
+            <span class="smember_search_arrow_icon_left"></span>
+          </div>
+          <div class="smember_search_content_right">
+            <div class="smember_after_search_title">已选人员(请从左侧点击选择)</div>
+            <div class="smember_after_search_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  <!-- <div>
+                    <div class="smember_list_empty">请从左侧点击选择</div>
+                  </div> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="smember_footer">
+          <div class="smember_footer_group">
+            <a href="javascript:void(0)" class="smember_btn_blue" data-handler="Submit">确定</a>
+            <a href="javascript:void(0)" class="smember_btn_default" data-handler="Cancel">取消</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 起止时间 -->    
+    <div class="tt-time-date-picker" id="date-time-picker" style="top: 46px; left: 468px; display:none;">
+      <ul class="tab-bar">
+        <li class="item-tab active" data-type="date">起止时间</li>
+      </ul>
+      <div class="cont-box" data-name="date-time-picker-content">
+        <div class="date-container">
+          <div data-name="date-time-picker-date">
+            <div class="daterangepicker dropdown-menu show-calendar open" style="top: 255px; right: 0px; left: auto;">
+              <div class="startDatetime calendar first left"></div>
+              <div class="endDatetime calendar second right"></div>
+              <div class="ranges">
+                <div class="range_inputs">
+                  <button class="applyBtn btn btn-small btn-sm btn-success" type="button">确定</button>
+                  &nbsp;
+                  <button class="cancelBtn btn btn-small btn-sm btn-default" type="button">取消</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 起止时间 -->    
+  </body>
+</html>

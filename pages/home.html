@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>易为码-动态</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="../public/img/favicon.ico" type="image/x-icon">
+    <script id="home_feed" type="text/template">
+      <div class="feed_list_v2">
+        <div data-name="feed-list-box">
+          <% if(feedlist.length == 0) {%>      
+          <div class="tt_common_emptyinit">
+            <div class="content_emptyinit">
+              <div class="className">还没有任何动态</div>
+            </div>
+          </div>
+          <%} else {%>      
+          <%
+            _.each(feedlist,function(item){                   
+          %>      
+          <div class="feed_item_box_v2" style="">
+            <div class="left_fb" data-name="feed-left">
+              <div>
+                <a href="javascript:void(0);" hidefocus="true" traget="_blank">
+                  <span class="radius_img50 avatar_fl" style="background-color:#f5b168;" original-title="<%=item.Dynamic.shareName%>
+                    ">
+                    <%=item.Dynamic.shareName%></span>
+                </a>
+              </div>
+            </div>
+            <div class="right_fb">
+              <div data-name="feed-main">
+                <div class="main_fb">
+                  <div class="info_fb" data-name="feed-source">
+                    <div>
+                      <a href="javascript:void(0);" hidefocus="true" class="name_ifb" traget="_blank">
+                        <%=item.Dynamic.shareName%></a>
+                      <span class="cont_ifb"></span>
+                    </div>
+                  </div>
+                  <div class="clearfix clear_fb"></div>
+                </div>
+              </div>
+              <div data-name="feed-content">
+                <div class="dynamic_fed">
+                  <span class="icon-quotes-left"></span>
+                  &nbsp;
+                  <%=item.Dynamic.writing%>      
+                  &nbsp;
+                  <span class="icon-quotes-right"></span>
+                </div>
+              </div>
+              <%if(item.Dynamic.photo){%>
+              <div class="attachment_fb">
+                <ul>
+                  <%
+                    var imgs = item.Dynamic.photo.split(",");
+                    _.each(imgs,function(itemimg){             
+                  %>
+                  <li class="item_afb">
+                    <div class="cont_afb">
+                      <div class="img_afb">
+                        <img src="<%=itemimg%>" layer-src="<%=itemimg%>" alt=""></div>
+                    </div>
+                  </li>
+                  <%});%>
+                </ul>
+              </div>
+              <%}%>
+              <div data-name="feed-actoin" class="feed-actoin">
+                <%if(item.Dynamic.address){%>
+                <div class="action_location">
+                  <span><%=item.Dynamic.address%></span>
+                </div>
+                <%}%>
+                <div class="action_wrap_fb clearfix">
+                  <div class="refer_fb">
+                    <span class="time_fb">
+                      <%=item.Dynamic.createDate%></span>
+                    &nbsp;&nbsp;
+                    <span></span>
+                  </div>
+                  <ul class="action_fb">
+                    <li class="feed-action-reply" data-name="feed-action-reply" data-sid="<%=item.Dynamic.sId%>">
+                      <span class="icon-dialogue"></span>
+                      <span>回复</span>
+                    </li>
+                    <!--<li class="line_afb">|</li>
+                  <li data-name="feed-action-collect">
+                    <span class="icon-heart"></span>
+                    <span>收藏</span>
+                  </li>
+                  -->
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div data-name="feed-pubblog">
+            <div id="<%=item.Dynamic.sId%>" class="tt_publishmblog" style="display: none;">
+              <div class="box_pm" data-name="mblog-box">
+                <div class="content_pm input-default" data-name="new-content-wrap">
+                  <div class="input_pm">
+                    <textarea class="feed-new-content" data-name="new-content" style="resize: none; overflow: hidden; word-wrap: break-word; height: 62px;" data-sid="<%=item.Dynamic.sId%>" user-selector-caret="0"></textarea>
+                  </div>
+                </div>
+                <div class="action_pm">
+                  <button class="btn btn-sure btn-disabled" data-name="submit" data-sid="<%=item.Dynamic.sId%>">回复</button>
+                  <button class="cancel_pm" data-name="cancel" data-sid="<%=item.Dynamic.sId%>">取消</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="submain_fb" data-name="feed-sub-main" style="display: block;">
+            <div data-name="feed-comment">
+              <div data-name="comment-list">
+                <%_.each(item.Dynamic.DynamicComments,function(comment){%>      
+                <div class="comment_item_box">
+                  <div class="right_cb">
+                    <div class="dynamic_cb">
+                      <span class="name_box_ccb">
+                        <a href="javascript:void(0);" class="name_dcb" traget="_blank">
+                          <%=comment.commentName%></a>
+                        ：
+                      </span>
+                      <%=comment.scContent%></div>
+                  </div>
+                </div>
+                <%});%></div>
+            </div>
+          </div>
+        </div>
+        <%});%>      
+
+        <%}%></div>
+      </div>
+    </script>
+    <script id="work_dialog" type="text/template">
+      <%console.log(worklist);
+      _.each(worklist,function(item){
+      if(item.pStatus == "0" || item.pStatus == "1"){
+      %>
+      <div data-name="work-box">
+        <div class="tt_klass_work">
+          <div class="title_kw select-item" data-name="work-title" data-id="<%=item.pId%>" data-type="0" data-sdate="<%=item.pStartDate%>" data-edate="<%=item.pEndDate%>">
+            <%if(item.task.length != 0){%>
+            <span class="select-icon icon-minus-square"></span>
+            <span class="icon-work-small"></span>
+            <%}else{%>
+            <span class="icon-work-small" style="margin-left: 28px;"></span>
+            <%}%>
+            <span><%=item.pName%></span>
+          </div>
+          <ul class="project-list">
+            <%_.each(item.task,function(task){%>
+            <li>
+              <span class="border-left last"></span>
+              <span class="icon-task-left-border"></span>
+              <div class="task_details select-item" data-id="<%=task.tId%>" data-type="1" data-sdate="<%=task.tStartDate%>" data-edate="<%=task.tEndDate%>">
+                <%if(task.ChildTask.length != 0){%>
+                  <span data-id="13127" data-name="packup" class="packup icon-minus"></span>
+                <%}%>
+                <span class="status_ttpl_wraper">
+                  <a href="javascript:void(0);" class="status_ttpl icon-taskStatus-<%=task.tStatus%>">
+                    <span class="ico"></span>
+                  </a>
+                </span>
+                <span><%=task.tName%></span>
+              </div>
+              <div class="child-list-wraper p2">
+                <ul class="child-list">
+                  <%_.each(task.ChildTask,function(childtask){%>
+                    <li class="planitem">
+                      <span class="border-left last"></span>
+                      <span class="icon-task-left-border"></span>
+                      <div class="childtask_details select-item" data-id="<%=childtask.tId%>" data-type="1" data-sdate="<%=childtask.tStartDate%>" data-edate="<%=childtask.tEndDate%>">
+                        <span href="javascript:void(0);" class="status_ttpl icon-taskStatus-<%=childtask.tStatus%>"></span>
+                        <span><%=childtask.tName%></span>
+                      </div>
+                    </li>
+                  <%});%>
+                </ul>
+              </div>
+            </li>
+            <%});%>
+          </ul>
+        </div>
+      </div>
+      <%}});%>
+    </script>
+    <link rel="stylesheet" href="../public/css/index.css">
+    <link rel="stylesheet" href="../public/css/index-1512011029.min.css">
+    <link rel="stylesheet" href="../public/css/lib.css">
+    <link rel="stylesheet" href="../public/css/all.css">
+    <link rel="stylesheet" href="../public/css/tipsy.css">
+    <link rel="stylesheet" href="../public/css/bootstrap-datetimepicker.min.css">
+    <script src="../public/js/require.js" data-main="../public/js/home.js?v=18"></script>
+  </head>
+  <body>
+    <div id="bs_layout_container">
+      <div class="tt_layout_warp">
+        <div id="header-region">
+          <div class="_tt_header">
+            <a class="logo logo_1" href="./index.html" title="返回首页"></a>
+            <span class="brand"></span>
+            <ul class="_tt_headnav" data-name="head-nav">
+              <!-- <div class="tt-header-extention">
+                <li class="guide_tthn ico_tthn" original-title="">
+                  <a href="javascript:void(0);" original-title="易管理入门"></a>
+                </li>
+                <li class="inivte_tthn ico_tthn">
+                  <a href="/u/200849439/Invite/InviteMoreIndex" data-name="invite-member" original-title="邀请同事"></a>
+                </li>
+              </div>
+              <li class="task_tthn ico_tthn" data-name="head-task">
+                <a href="#more/tasks" original-title="任务中心"></a>
+              </li>
+              <li class="todo_tthn ico_tthn" data-name="head-to-do">
+                <a href="#more/messages?messageType=1" data-name="no-msg" original-title="待办">
+                  <span class="red-remind-num" data-name="head-to-do-indicator" style="display: none;">0</span>
+                </a>
+              </li>
+              <li class="msg_tthn ico_tthn" data-name="head-message">
+                <a href="#more/messages?messageType=2&amp;isRead=2" data-name="no-msg" original-title="通知">
+                  <div class="red-remind-num" data-name="head-message-indicator" style="display: none;">0</div>
+                </a>
+              </li> -->
+              <li class="logout_tthn" tabindex="0">
+                <a href="javascript:void(0);" class="avatar_ltthn">
+                  <span class="radius_img30" style="background-color:#f5b168;"></span>
+                </a>
+                <a href="javascript:void(0);" class="namewrap_tthn"><span class="name_tthn"></span><b class="caret"></b></a>
+                <ul class="menu_ltthn">
+                  <!-- <li class="profile_ltthn"><a href="#italent/home?name=TalentProfile-record">个人主页</a></li>
+                  <li class="archives_ltthn"><a href="#more/archives">简档编辑</a></li>
+                  <li class="set_ltthn"><a href="#set?url=http://www.tita.com/u/200849439/Setting/Avatar&amp;page_id=avatar">个人设置</a></li> -->
+                  <li><a class="logout-btn" data-name="logout" href="javascript:void(0);">退出登录</a></li>
+                </ul>
+              </li>
+            </ul>
+<!--             <div class="tt_headsearch" data-name="head-search">
+              <div class="text_tths" style="width: auto; display: none;">
+                <input type="search" placeholder="搜索同事、动态、项目等"></div>
+              <a href="javascript:void(0);" class="btn_tths" data-name="head-search-button" original-title="搜索全站内容"></a>
+            </div> -->
+          </div>
+        </div>
+        <div class="_tt_layout_body">
+          <div id="sidebar-region">
+            <ul class="_tt_sidenav" style="min-height: 950px;">
+              <li>
+                <a href="./index.html" class="bench_ttsn" data-type="HomeBench" id="fbaea0c9-45d4-4a69-b5fd-333e80d392a9" target=""> 
+                  <strong></strong><span>工作台</span> 
+                </a>
+              </li>
+              <li class="active">
+                <a href="./home.html" class="home_ttsn" data-type="HomeDynamic" id="c1a9a11b-7a61-4578-943c-25499322aeea" target=""> 
+                  <strong></strong><span>动态</span>  
+                  <em class="red-remind" data-name="tita-sidebar-home-indicator"></em>
+                </a>
+              </li>
+              <li>
+                <a href="./work.html" class="work_ttsn" data-type="HomeWork" id="6a647758-3bdb-4669-8ad8-5526a535e176" target=""> 
+                  <strong></strong><span>项目</span>    
+                </a>
+              </li>
+              <li>
+                <a href="./daily.html" class="daily_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target=""> 
+                  <strong></strong><span>日报</span>
+                </a>
+              </li>
+              <li>
+                <a href="./report.html" class="report_ttsn" data-type="HomePlanStatistic" id="6db951ce-677d-4e3d-907d-67956828a312" target=""> 
+                  <strong></strong><span>报表</span>
+                </a>
+              </li>
+              <li>
+                <a href="./staff.html" class="staff_ttsn" data-type="HomeStaff" id="ebdd2fc3-fba3-41bf-8d13-9121b0921cd3" target=""> 
+                  <strong></strong><span>团队</span>
+                </a>
+              </li>
+              <li>
+                <a href="./apply.html" class="apply_ttsn" data-type="HomeDaily" id="559c85b1-a151-4722-bb06-888e29629d34" target=""> 
+                  <strong></strong><span>应用</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- 主区域 -->
+          <div id="main-region" class="_tt_layout_container_fluid" style="min-height: 405px;">
+            <div class="_tt_layout_home">
+              <div class="_tt_layout_home_right">
+                <div>
+                  <div class="tt_entertms"></div>
+                  <!-- <div class="tt_top_notice">
+                    <div class="title">置顶公告</div>
+                    <div data-name="top-notice">
+                      <ul class="topnotice">
+                        <div class="tt_common_emptyinit">
+                          <div class="content_emptyinit">
+                            <div class="className">暂无置顶公告，企业超级管理员可在“所有动态”中对单条动态进行置顶操作</div>
+                          </div>
+                        </div>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="tt_incommonlink">
+                    <div class="title">常用链接</div>
+                    <div class="list_icl">
+                      <a href="./staff.html" title="" class="btn btn-cancel">添加员工</a>
+                      <a href="http://emto.cn" title="" class="btn btn-cancel" target="_blank">帮助中心</a>
+                    </div>
+                  </div> -->
+                  <div class="tt_downloadmobile">
+                    <div class="title">微信公众号 易管理</div>
+                    <div class="weixin">
+                      <img src="../public/img/download_code.png" alt="二维码"></div>
+                  </div>
+                  <div class="tt_downloadmobile" data-name="download-mobile">
+                    <div class="title">手机客户端下载</div>
+                    <a href="javascript:void(0);" title="" class="cont_dlm cont_dlm_apple" target="_blank" data-type="apple"></a>
+                    <a href="javascript:void(0);" title="" class="cont_dlm cont_dlm_android" target="_blank" data-type="android"></a>
+                  </div>
+                </div>
+              </div>
+              <div class="_tt_layout_home_container">
+                <ul class="tt_pubtab" data-name="pub-tab">
+                  <li class="active" data-type="pub-blog">
+                    <a href="javascript:void(0);" title="">发分享</a> <i class="ico_cp"></i>
+                  </li>
+                  <li data-type="pub-task">
+                    <a href="javascript:void(0);" title="">派任务</a> <i class="ico_cp"></i>
+                  </li>
+                  <li data-type="pub-daily">
+                    <a href="javascript:void(0);" title="">写日报</a>
+                  </li>
+                </ul>
+                <div data-name="pub-tab-box">
+                  <div class="pubblog_home pub_home" data-name="pub-blog">
+                    <div id="home-publish-mlog" class="tt_publishmblog tt_line_publishmblog">
+                      <div class="box_pm" data-name="mblog-box">
+                        <div class="content_pm input-default" data-name="new-content-wrap">
+                          <div class="input_pm">
+                            <textarea data-name="new-content" placeholder="你在忙什么" style="resize:none;" data-smemberid="smember_1368" class="addDynamic-writing" maxlength="100"></textarea>
+                          </div>
+                          <div class="count_pm">
+                            <span class="num_pm" data-name="count">0</span>
+                            /100
+                          </div>
+                        </div>
+                        <div class="action_pm">
+                          <ul class="list_pm">
+                            <li class="ament_pm uploader_container">
+                              <a href="javascript:void(0);" data-name="file" original-title="">
+                                <div class="upload_component" style="overflow: hidden;">
+                                  <a href="javascript:void(0);" title="" data-name="file" class="upload_node upload_new_file">
+                                    文件/图片
+                                    <div class="upload_form_container" style="position: absolute; top: 0px;">
+                                        <input type="file" style="opacity:0;filter:alpha(opacity=0);" multiple="true" name="file_upload[]" class="upload_file_input">
+                                    </div>
+                                  </a>
+                                </div>
+                              </a>
+                            </li>
+                            <!-- <li class="at_pm" data-name="at" data-smemberid="smember_1368">
+                              <span class="icon-at" original-title=""></span>
+                              <a href="javascript:void(0);" title="">同事</a>
+                            </li>
+                            <li class="atall_pm" data-name="atall">
+                              <span class="icon-at" original-title=""></span>
+                              <a title="" href="javascript:void(0);">所有同事</a>
+                            </li>
+                            <li class="emotion_pm" data-name="emotion">
+                              <span class="icon-emotion"></span>
+                              <a title="" href="javascript:void(0);">表情</a>
+                            </li> -->
+                          </ul>
+                          <button class="btn btn-sure btn-disabled" data-name="submit">发布</button>
+                          <!-- <span class="quna_pm" id="1" isvisible="0" data-name="range">
+                            <i class="icon-lock" data-name="lock" style="display: none;"></i>
+                            <span data-name="range-cont">公开</span>
+                            <i class="caret" data-name="range-caret"></i>
+                          </span>
+                          <span class="pub_message" data-name="mblog-sms">
+                            <span class="checkbox" data-name="mblog-sms-input"></span>
+                            <span data-name="mblog-sms-text" original-title="被@的同事将会收到短信通知">短信通知</span>
+                          </span> -->
+                        </div>
+                        <div id="attachmentViewBox_homeMblog" class="error_container"></div>
+                        <div id="attachmentViewBox_homeMblog" class="preview_container">
+                          <ul class="tita-upload-preview"></ul>
+                        </div>
+                        <div id="attachmentViewBox_homeMblog" class="loading_view"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pubtask_home pub_home" data-name="pub-task">
+                    <!-- 添加任务 -->
+                    <div data-name="plan-cereate-form">
+                      <div id="Becnh-Plan-undefined" class="tt-task-create">
+                        <div class="task-create-laytout-input layout-border" data-name="task-create-add-input">
+                          <div class="task-create-add-task-container" data-name="task-create-add-task-container">
+                            <div class="task-create-class" data-name="task-create-class" data-type="2">
+                              <div class="task-create-class-wraper clearfix">
+                                <div class="task-create-class-innder " data-name="task-create-class">
+                                  <span data-name="task-create-class-name" class="task-create-class-name active">项目/任务</span>
+                                  <span class="icon-arrow-down"></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="task-create-name-container" data-name="task-create-name">
+                              <div class="ns-task-create-name">
+                                <span class="border"></span>
+                                <span class="ico-name icon-task-txt"></span>
+                                <input class="has-icon" data-name="task-create-name" type="text" placeholder="输入任务名称" value="">
+                                <div data-name="task-create-name-dropdown"></div>
+                              </div>
+                            </div>
+                            <div class="task-create-right-part">
+                              <div class="task-create-principle-area" data-name="task-create-principle-area">
+                                <div class="ns-task-principle" data-smemberid="smember_9096">
+                                  <span class="border"></span>
+                                  <div class="task-create-principle">
+                                    <span class="task-create-principle-inner" data-name="task-create-principle-inner">
+                                      <span class="icon-task-creater"></span>
+                                      <label class="task-create-principle-label" data-name="task-create-principle-label">选择负责人</label>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="task-create-date-container" data-name="task-create-date">
+                                <div class="ns-task-create-date">
+                                  <span class="border"></span>
+                                  <div class="task-create-date-inner" data-name="task-create-date-box" original-title="">
+                                    <span class="ico icon-task-during" data-name="task-create-date-ico"></span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>                    
+                        </div>
+                        <div class="task-create-layout-tools clearfix layout-border" data-name="task-create-tools" style="display: none;">
+                          <div class="task-create-tools-item-wraper" data-name="task-create-hour-date"></div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-participator">
+                            <div>
+                              <span data-name="task-create-participator" class="task-create-tools-item task-create-participator" title="添加参与者">
+                                <a href="javascript:void(0)" class="task-create-tools-link task-create-add-icon ">
+                                  参与者
+                                </a>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-apply-user">
+                            <div class="ns-task-create-applyuser">
+                              <span class="border"></span>
+                              <span class="task-create-tools-item task-create-applyuser-wraper" title="发起人">
+                                <a class="task-create-tools-link task-create-applyuser-icon " href="javascript:void(0)" data-name="task-create-applyuser" data-smemberid="smember_8942">发起人：</a>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-external-person"></div>
+                          <div class="task-create-tools-item-wraper" data-name="task-create-replace">
+                            <div class="create-replace-box">
+                              <span class="border"></span>
+                              <div class="task-create-tools-item task-create-replace disable">
+                                <span class="task-create-replace-label" data-name="task-create-replace-label">优先级：</span>
+                                <select class="priority">
+                                  <option value="1">重要</option>
+                                  <option value="0">特急</option>
+                                  <option value="2">一般</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 添加参与者 -->
+                        <div class="task-create-layout-extend layout-border" data-name="task-create-layout-extend">
+                          <div class="task-create-member-list">
+                            <em class="ux_add_btn" data-name="add-user-btn" data-smemberid="smember_9773"></em>
+                            <p class="participant_taskuser_result"></p>
+                          </div>
+                        </div>
+                        <!-- 添加参与者 -->
+                        <div class="task-create-richeditor layout-border has-extend" data-name="task-create-richeditor" style="display: none;">
+                          <div class="redactor_box">
+                            <textarea class="redactor_content" name="content" placeholder="任务描述"></textarea>
+                          </div>
+                        </div>
+                        <div class="task-create-bottom" data-name="task-create-bottom">
+                          <div class="task-create-bottom-box">
+                            <div class="task-create-bottom-wraper clearfix">
+                              <div class="ux_publish">                  
+                                <span class="toggle" data-name="toggle">
+                                  <span class="l">更多信息</span>
+                                  <span class="r icon-arrow-down-double"></span>
+                                </span>
+                                <a class="btn btn-sure btn-disabled" href="javascript:void(0);" title="发布" data-name="set-pub-btn">发布</a>
+                              </div>
+                            </div>
+                            <div class="error_container"></div>
+                            <div class="preview_container">
+                              <ul class="tita-upload-preview"></ul>
+                            </div>
+                            <div class="loading_view"></div>
+                          </div>
+                        </div>
+                        <!-- 选择项目 -->
+                        <div class="tt_class_dialog" style="top: 2px; left: 1px;">
+                          <div class="top_cd">
+                            <ul class="tab_cd" data-name="klass-tab">
+                              <li data-type="4" class="active">选择关联项目/任务</li>               
+                            </ul>
+                            <span class="icon-dialog-closed closed_cd" data-name="klass-close"></span>
+                          </div>
+                          <div class="box_cd">
+                            <div data-name="klass-content" class="plan-klass-content">
+                              <div class="tt_class_tree">
+                                <div class="cont_rd">
+                                  <div class="tt_tree_view">
+                                    
+                                    
+                                  </div>
+                                </div>
+                                <div class="bottom_rd" data-name="work-action">
+                                  <button class="btn btn-cancel reset_rd" data-name="klass-move-reset">清空选项</button>
+                                  <button class="btn btn-cancel cancel_rd" data-name="work-move-cancel">取消</button>
+                                  <button class="btn btn-sure sure_rd" data-name="work-move-submit">确定</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 选择项目 -->
+                      </div>
+                    </div>       
+                    <!-- 添加任务 -->
+                  </div>
+                  <div class="pubdaily_home pub_home" data-name="pub-daily">                  
+                    <div class="publish_daily_done" style="display:none;">
+                      今天已写日报 
+                      &nbsp;&nbsp;&nbsp;&nbsp;<a href="./daily.html">查看</a>
+                    </div>               
+                    <div class="tt_daily_pub_view">
+                      <div class="action_dp">
+                        <div class="left_dp">工作日报</div>
+                      </div>
+                      <div data-name="pub-daily-form">
+                        <div id="Daily2015/12/11" class="tt_publishmblog">
+                          <div class="box_pm" data-name="mblog-box">
+                            <div class="content_pm input-default" data-name="new-content-wrap">
+                              <div class="input_pm">
+                                <textarea data-name="new-content" style="resize:none;" data-smemberid="smember_1073"></textarea>
+                              </div>
+                              <div class="count_pm">
+                                <span class="num_pm" data-name="count">0</span>
+                                /4000
+                              </div>
+                            </div>
+                            <div class="action_pm">                             
+                              <button class="btn btn-sure btn-disabled" data-name="submit">发布</button>
+                              <span class="quna_pm" id="1" isvisible="0" data-name="range">
+                                <label><input name="share" type="checkbox" value="1" style="margin:0;" />分享到动态</label>
+                              </span>
+                            </div>
+                            <div id="attachmentViewBox_homeMblog" class="error_container"></div>
+                            <div id="attachmentViewBox_homeMblog" class="preview_container">
+                              <ul class="tita-upload-preview"></ul>
+                            </div>
+                            <div id="attachmentViewBox_homeMblog" class="loading_view"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="feed_home">
+                  <div>
+                    <div data-name="feed-tab">
+                      <div class="feed-tab">
+                        <ul class="nav_tabs" data-name="feed-nav">
+                          <li data-name="aboutme-all" class="active">
+                            <a href="javascript:void(0);" data-trigger="false">与我相关</a>
+                            <span class="red-remind" data-name="feed-aboutme-indicator"></span>
+                          </li>
+                          <li data-name="aboutteam-all">
+                            <a href="javascript:void(0);" data-trigger="false">所有动态</a>
+                            <span class="red-remind" data-name="feed-all-indicator"></span>
+                          </li>
+                        </ul>
+                        <!-- <div data-name="feed-search" class="feed-search">
+                          <div class="search-form-list">
+                            <form>
+                              <div class="input-default">
+                                <a href="javascript:void(0);" title="" class="button_sfl" data-type="submit-content">
+                                  <span class="icon-search"></span>
+                                </a>
+                                <input type="text" data-type="new-content" autocomplete="off"></div>
+                            </form>
+                          </div>
+                        </div>
+                        <ul class="sub-tab-nav" data-name="feed-sub-nav">
+                          <li class="active">
+                            <a href="#home?feedType=aboutme-all" data-trigger="false">所有</a>
+                          </li>
+                          <li>
+                            <a href="#home?feedType=aboutme-replyme" data-trigger="false">回复我的</a>
+                          </li>
+                          <li>
+                            <a href="#home?feedType=aboutme-tome" data-trigger="false">@我的</a>
+                          </li>
+                          <li>
+                            <a href="#home?feedType=aboutme-fromme" data-trigger="false">我发表的</a>
+                          </li>
+                          <li>
+                            <a href="#home?feedType=aboutme-collect" data-trigger="false">我收藏的</a>
+                          </li>
+                        </ul> -->
+                      </div>
+                    </div>
+                    <div data-name="feed-list" class="home-feed-list">
+                      
+                    </div>                  
+                  </div>
+                </div>
+              </div>
+              <div class="_tt_pagebottomline"></div>
+            </div>
+          </div>
+          <!-- 主区域 -->
+        </div>
+      </div>
+    </div>
+    <!-- 添加负责人 -->
+    <div class="smember_container smember_container_fzr" style="display: none;">
+      <div class="smember_simple_container">
+        <div class="smember_condition">
+          <div class="smember_condition_all">
+            <div class="project_user_principal">
+              <input autocomplete="off" class="smember_condition_input" type="text" name="content" placeholder="输入同事姓名">
+            </div>
+          </div>
+        </div>
+        <div class="smember_search_content">
+          <div class="smember_search_content_left">
+            <div class="smember_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  
+                </ul>
+              </div>
+            </div>
+            <div class="smember_search_content_left_footer"></div>
+          </div>
+        </div>      
+        <div class="smember_footer">
+          <div class="smember_footer_group">
+            <a href="javascript:void(0)" class="smember_btn_default" data-handler="Close">关闭</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 添加参与人 -->
+    <div class="smember_container smember_container_cyr" style="display: none;">
+      <div class="smember_muti_container">
+        <div class="smember_header">
+          选择人员
+          <a href="javascript:void(0)" class="smember_btn_close" data-handler="Close"></a>
+        </div>
+        <div class="smember_condition">
+          <div class="smember_condition_all">
+            <div class="smember_form_container">
+              <div class="smember_header_input">
+                <input autocomplete="off" class="smember_condition_input" type="text" name="content" placeholder="输入同事姓名"></div>
+            </div>
+          </div>
+        </div>
+        <div class="smember_search_content">
+          <div class="smember_search_content_left">
+            <div class="smember_tab">
+              成员
+            </div>
+            <div class="smember_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  <div>
+                    <div class="smember_list_empty">输入同事姓名</div>
+                  </div>
+                </ul>
+              </div>
+            </div>
+            <div class="smember_search_content_left_footer"></div>
+          </div>
+          <div class="smember_search_content_center">
+            <span class="smember_search_arrow_icon"></span>
+            <span class="smember_search_arrow_icon_left"></span>
+          </div>
+          <div class="smember_search_content_right">
+            <div class="smember_after_search_title">已选人员(请从左侧点击选择)</div>
+            <div class="smember_after_search_list_container">
+              <div>
+                <ul class="smember_list_parent">
+                  <!-- <div>
+                    <div class="smember_list_empty">请从左侧点击选择</div>
+                  </div> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="smember_footer">
+          <div class="smember_footer_group">
+            <a href="javascript:void(0)" class="smember_btn_blue" data-handler="Submit">确定</a>
+            <a href="javascript:void(0)" class="smember_btn_default" data-handler="Cancel">取消</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 起止时间 -->    
+    <div class="tt-time-date-picker" id="date-time-picker" style="top: 21px; left: 0px; display:none;">
+      <ul class="tab-bar">
+        <li class="item-tab active" data-type="date">起止时间</li>
+      </ul>
+      <div class="cont-box" data-name="date-time-picker-content">
+        <div class="date-container">
+          <div data-name="date-time-picker-date">
+            <div class="daterangepicker dropdown-menu show-calendar open" style="top: 255px; right: 0px; left: auto;">
+              <div class="startDatetime calendar first left"></div>
+              <div class="endDatetime calendar second right"></div>
+              <div class="ranges">
+                <div class="range_inputs">
+                  <button class="applyBtn btn btn-small btn-sm btn-success" type="button">确定</button>
+                  &nbsp;
+                  <button class="cancelBtn btn btn-small btn-sm btn-default" type="button">取消</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 起止时间 -->
+  </body>
+</html>
