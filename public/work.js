@@ -375,7 +375,7 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 								g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
 								
 								g.setShowRes(1); // Show/Hide Responsible (0/1)
-								g.setShowDur(1); // Show/Hide Duration (0/1)
+								g.setShowDur(0); // Show/Hide Duration (0/1)
 								g.setShowComp(1); // Show/Hide % Complete(0/1)
 							    g.setCaptionType('Resource');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
 								
@@ -385,35 +385,97 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 									
 									// You can also use the XML file parser JSGantt.parseXML('project.xml',g)
 									
+									function  DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2006-12-18格式  计算相差天数
+									       var  aDate,  oDate1,  oDate2,  iDays;  
+									       aDate  =  sDate1.split("-");  
+									       oDate1  =  new  Date(aDate[1]  +  '-'  +  aDate[2]  +  '-'  +  aDate[0]); //转换为12-18-2006格式  
+									       aDate  =  sDate2.split("-");  
+									       oDate2  =  new  Date(aDate[1]  +  '-'  +  aDate[2]  +  '-'  +  aDate[0]);  
+									       iDays  =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24); //把相差的毫秒数转换为天数  
+									       return  iDays;  
+									   } 
+									var data = new Date();
+										if((parseInt(data.getMonth())+1)<10){ // 处理时间的格式
+											if(data.getDate()<10){
+												var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
+											}else{
+												var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
+											}
+										}else{
+											if(data.getDate()<10){
+												var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
+											}else{
+												var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
+											}
+										}
+									
 									$.each(task,function(i,item){
 										
-										var startTime = item.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
-										var endTime = item.tEndDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+										
 										
 										var hasChild = 0;
 										if(item.ChildTask.length > 0){
-											hasChild = 1;
+											var startTime = item.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+											var endTime = item.tEndDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+											g.AddTaskItem(new JSGantt.TaskItem(item.tId, item.tName, startTime, endTime, '74BDFF', '', 0, item.proposerName, item.tSchedule, 1, 0, 1,'','', status[item.tStatus]));
+										}else{
+											if(item.tStatus==3 || item.tStatus==1 ){
+												var startTime = item.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+												var endTime = item.tEndDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+												if(item.tStatus==3){
+													g.AddTaskItem(new JSGantt.TaskItem(item.tId, item.tName, startTime, endTime, '74BDFF', '', 0, item.proposerName, item.tSchedule, 0, 0, 1,'','', status[item.tStatus]));
+												}else{
+													g.AddTaskItem(new JSGantt.TaskItem(item.tId, item.tName, startTime, endTime, '74BDFF', '', 0, item.proposerName, 0, 0, 0, 1,'','', status[item.tStatus]));
+													//$('#child_'+childitem.tId).find('.schedule').find('nobr').html(item.tSchedule);
+												}
+											}else{
+												
+												if((new Date(nowtime).getTime()-new Date(item.tEndDate.replace(/\//g, '-')).getTime())>0){
+															
+													//console.log(DateDiff( nowtime, childitem.tEndDate.replace(/\//g, '-') ));
+													var taskDays = DateDiff( item.tStartDate.replace(/\//g, '-'),item.tEndDate.replace(/\//g, '-') )+1; // 任务天数
+													var actualDays = DateDiff( item.tStartDate.replace(/\//g, '-'),nowtime )+1; // 任务开始到现在的天数
+													
+													var percentageDay = Math.round(taskDays*100/actualDays);
+													
+													var startTime = item.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+													//console.log(childitem.tEndDate+'==============');
+													//console.log(nowtime);
+													nowtime = nowtime.replace(/-/g, '/');
+													//console.log(nowtime);
+													var endTime = nowtime.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+													
+													g.AddTaskItem(new JSGantt.TaskItem(item.tId, item.tName, startTime, endTime, 'ff0000', '', 0, item.proposerName, percentageDay, 0, 0, 1,'','', status[item.tStatus]));
+//															$('#taskbar_'+childitem.tId).find('.gcomplete').css('background-color', "#74BDFF");
+//															if(childitem.tStatus==2){
+//																$('#child_'+childitem.tId).find('.schedule').find('nobr').html(childitem.tSchedule);
+//																console.log(childitem.tSchedule);
+//															}else{
+//																$('#child_'+childitem.tId).find('.schedule').find('nobr').html("0");
+//															}
+													
+												}else{
+													var startTime = item.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+													var endTime = item.tEndDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
+													//console.log( childitem.tId+'====='+ childitem.tName+'====='+ childStartTime+'====='+ childEndTime+'====='+ childitem.proposerName+'====='+ childitem.tSchedule+'====='+ typeof childitem.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[childitem.tStatus]  );
+													//g.AddTaskItem(new JSGantt.TaskItem(childitem.tId, childitem.tName, childStartTime, childEndTime, '74BDFF', '', 0, childitem.proposerName, childitem.tSchedule, 0, childitem.ftId, 1,'','', status[childitem.tStatus]));
+													g.AddTaskItem(new JSGantt.TaskItem(item.tId, item.tName, startTime, endTime, '74BDFF', '', 0, item.proposerName, item.tSchedule, 0, 0, 1,'','', status[item.tStatus]));
+													//$('#taskbar_'+childitem.tId).find('.gcomplete').css('background-color', "#74BDFF");
+												}
+												
+												
+												
+											}
 										}
 										
-										g.AddTaskItem(new JSGantt.TaskItem(item.tId, item.tName, startTime, endTime, '74BDFF', '', 0, item.proposerName, item.tSchedule, hasChild, 0, 1,'','', status[item.tStatus]));
-										//g.AddTaskItem(new JSGantt.TaskItem(1,   '易管理web端UI设计', '3/24/2016', '4/1/2016', '74BDFF', '', 0, 'devil',     0, 0, 0, 1,'','', '进行中'));
-										
 										if(item.ChildTask.length > 0){
-											console.log( item.tId+'====='+ item.tName+'====='+ startTime+'====='+ endTime+'====='+ item.proposerName+'====='+ item.tSchedule+'====='+ typeof item.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[item.tStatus]  );
+											//console.log( item.tId+'====='+ item.tName+'====='+ startTime+'====='+ endTime+'====='+ item.proposerName+'====='+ item.tSchedule+'====='+ typeof item.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[item.tStatus]  );
 											$.each(item.ChildTask,function(j,childitem){
 												if(childitem != undefined && childitem.ftId == item.tId){
-													function  DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2006-12-18格式  计算相差天数
-													       var  aDate,  oDate1,  oDate2,  iDays;  
-													       aDate  =  sDate1.split("-");  
-													       oDate1  =  new  Date(aDate[1]  +  '-'  +  aDate[2]  +  '-'  +  aDate[0]); //转换为12-18-2006格式  
-													       aDate  =  sDate2.split("-");  
-													       oDate2  =  new  Date(aDate[1]  +  '-'  +  aDate[2]  +  '-'  +  aDate[0]);  
-													       iDays  =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24); //把相差的毫秒数转换为天数  
-													       return  iDays;  
-													   } 
+													
 													
 													if(childitem.tStatus==3 || childitem.tStatus==1 ){ // 任务已完成状态 和进行时
-														console.log( childitem.tId+'====='+ childitem.tName+'====='+ childStartTime+'====='+ childEndTime+'====='+ childitem.proposerName+'====='+ childitem.tSchedule+'====='+ typeof childitem.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[childitem.tStatus]  );
+														//console.log( childitem.tId+'====='+ childitem.tName+'====='+ childStartTime+'====='+ childEndTime+'====='+ childitem.proposerName+'====='+ childitem.tSchedule+'====='+ typeof childitem.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[childitem.tStatus]  );
 														var childStartTime = childitem.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
 														var childEndTime = childitem.tEndDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
 														
@@ -429,22 +491,7 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 													
 													}else{
 														
-														var data = new Date();
-														if((parseInt(data.getMonth())+1)<10){ // 处理时间的格式
-															if(data.getDate()<10){
-																var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
-															}else{
-																var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
-															}
-														}else{
-															if(data.getDate()<10){
-																var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
-															}else{
-																var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
-															}
-														}
-														
-														console.log(DateDiff( nowtime, childitem.tEndDate.replace(/\//g, '-') +'+++++++++++++++++'));
+														//console.log(DateDiff( nowtime, childitem.tEndDate.replace(/\//g, '-') +'+++++++++++++++++'));
 														
 														
 														if((new Date(nowtime).getTime()-new Date(childitem.tEndDate.replace(/\//g, '-')).getTime())>0){
@@ -456,14 +503,14 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 															var percentageDay = Math.round(taskDays*100/actualDays);
 															
 															var childStartTime = childitem.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
-															console.log(childitem.tEndDate+'==============');
-															console.log(nowtime);
+															//console.log(childitem.tEndDate+'==============');
+															//console.log(nowtime);
 															nowtime = nowtime.replace(/-/g, '/');
-															console.log(nowtime);
+															//console.log(nowtime);
 															var childEndTime = nowtime.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
-															console.log(percentageDay+"======"+childitem.tSchedule);
-															console.log(childEndTime);
-															console.log( childitem.tId+'====='+ childitem.tName+'====='+ childStartTime+'====='+ childEndTime+'====='+ childitem.proposerName+'====='+ childitem.tSchedule+'====='+ typeof childitem.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[childitem.tStatus]  );
+															//console.log(percentageDay+"======"+childitem.tSchedule);
+															//console.log(childEndTime);
+															//console.log( childitem.tId+'====='+ childitem.tName+'====='+ childStartTime+'====='+ childEndTime+'====='+ childitem.proposerName+'====='+ childitem.tSchedule+'====='+ typeof childitem.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[childitem.tStatus]  );
 															g.AddTaskItem(new JSGantt.TaskItem(childitem.tId, childitem.tName, childStartTime, childEndTime, 'ff0000', '', 0, childitem.proposerName, percentageDay, 0, childitem.ftId, 1,'','', status[childitem.tStatus]));
 															
 //															$('#taskbar_'+childitem.tId).find('.gcomplete').css('background-color', "#74BDFF");
@@ -477,7 +524,7 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 														}else{
 															var childStartTime = childitem.tStartDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
 															var childEndTime = childitem.tEndDate.replace( /(\d{4})\/(\d{2})\/(\d{2})/, "$2/$3/$1" );
-															console.log( childitem.tId+'====='+ childitem.tName+'====='+ childStartTime+'====='+ childEndTime+'====='+ childitem.proposerName+'====='+ childitem.tSchedule+'====='+ typeof childitem.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[childitem.tStatus]  );
+															//console.log( childitem.tId+'====='+ childitem.tName+'====='+ childStartTime+'====='+ childEndTime+'====='+ childitem.proposerName+'====='+ childitem.tSchedule+'====='+ typeof childitem.tSchedule +'====='+ hasChild+'====='+ typeof hasChild+'====='+ status[childitem.tStatus]  );
 															g.AddTaskItem(new JSGantt.TaskItem(childitem.tId, childitem.tName, childStartTime, childEndTime, '74BDFF', '', 0, childitem.proposerName, childitem.tSchedule, 0, childitem.ftId, 1,'','', status[childitem.tStatus]));
 															//$('#taskbar_'+childitem.tId).find('.gcomplete').css('background-color', "#74BDFF");
 														}
@@ -507,11 +554,7 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 									
 									$.each(task,function(i,item){
 										
-										if(item.ChildTask.length > 0){
-											
-											$.each(item.ChildTask,function(j,childitem){
-												if(childitem != undefined && childitem.ftId == item.tId){
-													function  DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2006-12-18格式  计算相差天数
+										function  DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2006-12-18格式  计算相差天数
 													       var  aDate,  oDate1,  oDate2,  iDays;  
 													       aDate  =  sDate1.split("-");  
 													       oDate1  =  new  Date(aDate[1]  +  '-'  +  aDate[2]  +  '-'  +  aDate[0]); //转换为12-18-2006格式  
@@ -520,6 +563,49 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 													       iDays  =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24); //把相差的毫秒数转换为天数  
 													       return  iDays;  
 													   } 
+										var data = new Date();
+											if((parseInt(data.getMonth())+1)<10){ // 处理时间的格式
+												if(data.getDate()<10){
+													var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
+												}else{
+													var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
+												}
+											}else{
+												if(data.getDate()<10){
+													var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
+												}else{
+													var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
+												}
+											}
+										if(item.tStatus==3 || item.tStatus==1 ){
+												if(item.tStatus==1){
+													$('#child_'+item.tId).find('.schedule').find('nobr').html(item.tSchedule+'%');
+												}
+											}else{
+												
+												if((new Date(nowtime).getTime()-new Date(item.tEndDate.replace(/\//g, '-')).getTime())>0){
+													
+													$('#taskbar_'+item.tId).find('.gcomplete').css('background-color', "#74BDFF");
+													if(item.tStatus==2){
+														$('#child_'+item.tId).find('.schedule').find('nobr').html(item.tSchedule+'%');
+													}else{
+														$('#child_'+item.tId).find('.schedule').find('nobr').html("0%");
+													}
+													$('#child_'+item.tId).find('.endData').find('nobr').html(item.tEndDate);
+												}else{
+													
+													$('#taskbar_'+item.tId).find('.gcomplete').css('background-color', "#74BDFF");
+												}
+												
+												
+												
+											}
+										
+										if(item.ChildTask.length > 0){
+											
+											$.each(item.ChildTask,function(j,childitem){
+												if(childitem != undefined && childitem.ftId == item.tId){
+													
 													
 													if(childitem.tStatus==3 || childitem.tStatus==1 ){ // 任务已完成状态 和进行时
 														
@@ -535,30 +621,18 @@ require(["jquery","common", "tipsy", "datetimepicker", "underscore", "gantt","la
 													
 													}else{
 														
-														var data = new Date();
-														if((parseInt(data.getMonth())+1)<10){ // 处理时间的格式
-															if(data.getDate()<10){
-																var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
-															}else{
-																var nowtime = data.getFullYear() + '-0' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
-															}
-														}else{
-															if(data.getDate()<10){
-																var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-0' + data.getDate();
-															}else{
-																var nowtime = data.getFullYear() + '-' + (parseInt(data.getMonth())+1) + '-' + data.getDate();
-															}
-														}
 														
-														if(DateDiff( nowtime, childitem.tEndDate.replace(/\//g, '-') )>0){
+														
+														if((new Date(nowtime).getTime()-new Date(childitem.tEndDate.replace(/\//g, '-')).getTime())>0){
 															//console.log('3');
 															if(childitem.tStatus==2){
 																$('#child_'+childitem.tId).find('.schedule').find('nobr').html(childitem.tSchedule+'%');
 																//console.log(childitem.tSchedule);
 															}else{
-																$('#child_'+childitem.tId).find('.schedule').find('nobr').html("0");
+																$('#child_'+childitem.tId).find('.schedule').find('nobr').html("0%");
 																//console.log('555555');
 															}
+															$('#child_'+childitem.tId).find('.endData').find('nobr').html(childitem.tEndDate);
 															$('#taskbar_'+childitem.tId).find('.gcomplete').css('background-color', "#74BDFF");
 														}else{
 															//console.log('4');

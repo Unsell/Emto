@@ -293,7 +293,7 @@ var vVisible  = 1;
 * Returns task completion percent as formatted string (##%)
 * @method getCompStr
 * @return {String}
-*/    this.getCompStr  = function(){ if(vComp) return vComp+'%'; else return '0'; };
+*/    this.getCompStr  = function(){ if(vComp) return vComp+'%'; else return '0%'; };
 
 /**
 * Returns task duration as a fortmatted string based on the current selected format
@@ -945,7 +945,7 @@ Complete-Displays task percent complete</p>
          // Calculate chart width variables.  vColWidth can be altered manually to change each column width
          // May be smart to make this a parameter of GanttChart or set it based on existing pWidth parameter
          if(vFormat == 'day') {
-            vColWidth = 18;
+            vColWidth = 30;
             vColUnit = 1;
          }
          else if(vFormat == 'week') {
@@ -993,15 +993,15 @@ Complete-Displays task percent complete</p>
 		   // DRAW the Left-side of the chart (names, resources, comp%)
          vLeftTable =
             '<DIV class=scroll id=leftside style="width:auto"><TABLE cellSpacing=0 cellPadding=0 border=0><TBODY>' +
-            '<TR style="HEIGHT: 17px">' +
-            '  <TD style="WIDTH: 15px; HEIGHT: 17px"></TD>' +
-            '  <TD style="WIDTH: ' + vNameWidth + 'px; HEIGHT: 17px"><NOBR></NOBR></TD>'; 
+            '<TR style="HEIGHT: 31px">' +
+            '  <TD style="WIDTH: 15px; HEIGHT: 31px"></TD>' +
+            '  <TD style="WIDTH: ' + vNameWidth + 'px; HEIGHT: 31px"><NOBR></NOBR></TD>'; 
 
-         if(vShowRes ==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 17px"></TD>' ;
-         if(vShowDur ==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 17px"></TD>' ;
-         if(vShowComp==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 17px"></TD>' ;
-			if(vShowStartDate==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 17px"></TD>' ;
-			if(vShowEndDate==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 17px"></TD>' ;
+         if(vShowRes ==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 31px"></TD>' ;
+         if(vShowDur ==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 31px"></TD>' ;
+         if(vShowComp==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 31px"></TD>' ;
+			if(vShowStartDate==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 31px"></TD>' ;
+			if(vShowEndDate==1) vLeftTable += '  <TD style="WIDTH: ' + vStatusWidth + 'px; HEIGHT: 31px"></TD>' ;
 
          vLeftTable +=
             '<TR style="HEIGHT: 20px">' +
@@ -1038,7 +1038,7 @@ Complete-Displays task percent complete</p>
                   '  <TD class=gname style="WIDTH: ' + vNameWidth + 'px; HEIGHT: 20px; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px;" nowrap><NOBR><span style="color: #aaaaaa">';
 								
                for(j=1; j<vTaskList[i].getLevel(); j++) {
-                  vLeftTable += '&nbsp&nbsp&nbsp';
+                  vLeftTable += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                }
 
                vLeftTable += '</span>';
@@ -1061,7 +1061,7 @@ Complete-Displays task percent complete</p>
                if(vShowDur ==1) vLeftTable += '  <TD class=gname style="WIDTH: 60px; HEIGHT: 20px; TEXT-ALIGN: center; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid;" align=center><NOBR>' + vTaskList[i].getDuration(vFormat) + '</NOBR></TD>' ;
                if(vShowComp==1) vLeftTable += '  <TD class="gname schedule" style="WIDTH: 60px; HEIGHT: 20px; TEXT-ALIGN: center; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid;" align=center><NOBR>' + vTaskList[i].getCompStr()  + '</NOBR></TD>' ;
                if(vShowStartDate==1) vLeftTable += '  <TD class=gname style="WIDTH: 60px; HEIGHT: 20px; TEXT-ALIGN: center; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid;padding: 0 10px;" align=center><NOBR>' + JSGantt.formatDateStr( vTaskList[i].getStart(), vDateDisplayFormat) + '</NOBR></TD>' ;
-               if(vShowEndDate==1) vLeftTable += '  <TD class=gname style="WIDTH: 60px; HEIGHT: 20px; TEXT-ALIGN: center; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid;padding: 0 10px;" align=center><NOBR>' + JSGantt.formatDateStr( vTaskList[i].getEnd(), vDateDisplayFormat) + '</NOBR></TD>' ;
+               if(vShowEndDate==1) vLeftTable += '  <TD class="gname endData" style="WIDTH: 60px; HEIGHT: 20px; TEXT-ALIGN: center; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid;padding: 0 10px;" align=center><NOBR>' + JSGantt.formatDateStr( vTaskList[i].getEnd(), vDateDisplayFormat) + '</NOBR></TD>' ;
 
                vLeftTable += '</TR>';
 
@@ -1112,7 +1112,7 @@ Complete-Displays task percent complete</p>
             '<TD style="width: ' + vChartWidth + 'px;" vAlign=top bgColor=#ffffff>' +
             '<DIV class=scroll2 id=rightside>' +
             '<TABLE style="width: ' + vChartWidth + 'px;" cellSpacing=0 cellPadding=0 border=0>' +
-            '<TBODY><TR style="HEIGHT: 18px">';
+            '<TBODY><TR style="HEIGHT: 32px">';
 
             vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
             vTmpDate.setHours(0);
@@ -1142,7 +1142,7 @@ Complete-Displays task percent complete</p>
   	         if(vFormat == 'day')
             {
 			      vRightTable += '<td class=gdatehead style="FONT-SIZE: 12px; HEIGHT: 19px;" align=center colspan=7>' +
-			      JSGantt.formatDateStr(vTmpDate,vDateDisplayFormat.substring(0,5)) + ' - ';
+			      JSGantt.formatDateStr(vTmpDate,vDateDisplayFormat.substring(0,10)) + ' - ';
                vTmpDate.setDate(vTmpDate.getDate()+6);
 		         vRightTable += JSGantt.formatDateStr(vTmpDate, vDateDisplayFormat) + '</td>';
                vTmpDate.setDate(vTmpDate.getDate()+1);
@@ -1445,20 +1445,20 @@ Complete-Displays task percent complete</p>
                      '<TR id=childrow_' + vID + ' class=yesdisplay style="HEIGHT: 20px" bgColor=#f3f3f3 onMouseover=g.mouseOver(this,' + vID + ',"right","group") onMouseout=g.mouseOut(this,' + vID + ',"right","group")>' + vItemRowStr + '</TR></TABLE></DIV>';
                   vRightTable +=
                      '<div id=bardiv_' + vID + ' style="position:absolute; top:5px; left:' + Math.ceil(vTaskLeft * (vDayWidth) + 1) + 'px; height: 7px; width:' + Math.ceil((vTaskRight) * (vDayWidth) - 1) + 'px">' +
-                       '<div id=taskbar_' + vID + ' title="' + vTaskList[i].getName() + ': ' + vDateRowStr + '" class=gtask style="background-color:#000000; height: 7px; width:' + Math.ceil((vTaskRight) * (vDayWidth) -1) + 'px;  cursor: pointer;opacity:0.9;">' +
+                       '<div id=taskbar_' + vID + ' title="' + vTaskList[i].getName() + ': ' + vDateRowStr + '" class=gtask style="background-color:#000000; height: 7px; width:' + Math.ceil((vTaskRight) * (vDayWidth) -1) + 'px;  cursor: pointer;opacity:0;">' +
                          '<div style="Z-INDEX: -4; float:left; background-color:#666666; height:3px; overflow: hidden; margin-top:1px; ' +
-                               'margin-left:1px; margin-right:1px; filter: alpha(opacity=80); opacity:0.8; width:' + vTaskList[i].getCompStr() + '; ' + 
+                               'margin-left:1px; margin-right:1px; filter: alpha(opacity=80); opacity:0; width:' + vTaskList[i].getCompStr() + '; ' + 
                                'cursor: pointer;" onclick=JSGantt.taskLink("' + vTaskList[i].getLink() + '",300,200);>' +
                            '</div>' +
                         '</div>' +
-                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:4px; overflow: hidden; width:1px;"></div>' +
-                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:4px; overflow: hidden; width:1px;"></div>' +
-                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:3px; overflow: hidden; width:1px;"></div>' +
-                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:3px; overflow: hidden; width:1px;"></div>' +
-                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:2px; overflow: hidden; width:1px;"></div>' +
-                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:2px; overflow: hidden; width:1px;"></div>' +
-                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:1px; overflow: hidden; width:1px;"></div>' +
-                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:1px; overflow: hidden; width:1px;"></div>' ;
+                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:4px; overflow: hidden; width:1px;opacity:0;"></div>' +
+                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:4px; overflow: hidden; width:1px;opacity:0;"></div>' +
+                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:3px; overflow: hidden; width:1px;opacity:0;"></div>' +
+                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:3px; overflow: hidden; width:1px;opacity:0;"></div>' +
+                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:2px; overflow: hidden; width:1px;opacity:0;"></div>' +
+                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:2px; overflow: hidden; width:1px;opacity:0;"></div>' +
+                        '<div style="Z-INDEX: -4; float:left; background-color:#000000; height:1px; overflow: hidden; width:1px;opacity:0;"></div>' +
+                        '<div style="Z-INDEX: -4; float:right; background-color:#000000; height:1px; overflow: hidden; width:1px;opacity:0;"></div>' ;
 
                         if( g.getCaptionType() ) {
                            vCaptionStr = '';
@@ -1469,7 +1469,7 @@ Complete-Displays task percent complete</p>
                               case 'Complete':   vCaptionStr = vTaskList[i].getCompStr();  break;
 		                     }
                            //vRightTable += '<div style="FONT-SIZE:12px; position:absolute; left: 6px; top:1px;">' + vCaptionStr + '</div>';
-                           vRightTable += '<div style="FONT-SIZE:12px; position:absolute; top:-3px; width:auto;white-space:nowrap; left:' + (Math.ceil((vTaskRight) * (vDayWidth) - 1) + 6) + 'px">' + vCaptionStr + '</div>';
+                           vRightTable += '<div style="FONT-SIZE:12px; position:absolute; top:-3px; width:auto;white-space:nowrap; left:' + (Math.ceil((vTaskRight) * (vDayWidth) - 1) + 6) + 'px;opacity:0;">' + vCaptionStr + '</div>';
 	                  };
 
                   vRightTable += '</div>' ;
